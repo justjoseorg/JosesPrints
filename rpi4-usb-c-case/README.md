@@ -15,6 +15,13 @@ The board is retained by two split snap-pegs and two locating pins. The lid uses
 | [`lid.stl`](lid.stl) | Snap-fit lid |
 | [`preview.png`](preview.png) | Assembled render |
 
+## Interactive 3D preview
+
+GitHub's STL viewer lets you rotate and inspect each part:
+
+- [Open the base in the 3D viewer](base.stl)
+- [Open the lid in the 3D viewer](lid.stl)
+
 ## Printing
 
 - Print the base upright.

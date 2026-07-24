@@ -13,6 +13,13 @@ A two-piece, tapered coin container for a 70 mm car cup holder. The body has thr
 | [`lid.stl`](lid.stl) | Friction-fit lid |
 | [`preview.png`](preview.png) | Assembled render |
 
+## Interactive 3D preview
+
+GitHub's STL viewer lets you rotate and inspect each part:
+
+- [Open the body in the 3D viewer](body.stl)
+- [Open the lid in the 3D viewer](lid.stl)
+
 ## Printing
 
 - Print the body open-side up.
