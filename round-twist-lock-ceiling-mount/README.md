@@ -10,11 +10,14 @@ A round cable mount with two opposing ramped twist-lock slots. The screw heads e
 | --- | --- |
 | [`round_twist_lock_ceiling_mount.scad`](round_twist_lock_ceiling_mount.scad) | Parametric OpenSCAD source |
 | [`mount.stl`](mount.stl) | Ready-to-print mount |
+| [`drilling_template.scad`](drilling_template.scad) | Independent drilling-template source |
+| [`drilling_template.stl`](drilling_template.stl) | Flat guide for the screw and cable-hole locations |
 | [`preview.png`](preview.png) | Underside render showing the locking slots |
 
 ## Interactive 3D preview
 
-[Open the mount in GitHub's interactive STL viewer](mount.stl) to rotate and inspect it in the browser.
+- [Open the mount in the 3D viewer](mount.stl)
+- [Open the drilling template in the 3D viewer](drilling_template.stl)
 
 ## Dimensions and hardware
 
@@ -30,6 +33,8 @@ A round cable mount with two opposing ramped twist-lock slots. The screw heads e
 
 - Print in the modeled orientation with the hollow side on the build plate.
 - Supports are recommended beneath the internal roof and twist-lock channels.
+- Print the drilling template flat; it does not require supports.
+- The template's outer guide centers are 68 mm apart and its center guide marks the cable hole.
 - Verify the screw-head dimensions and locking fit before installation.
 - Adjust `shaft_dia`, `head_dia`, `lip_start`, and `lip_end` to tune the hardware fit.
 
