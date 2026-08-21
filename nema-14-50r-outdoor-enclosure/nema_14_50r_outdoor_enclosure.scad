@@ -5,15 +5,17 @@
   top-hinged rain flap, and separate TPU seals. It is intended for use
   with a listed receptacle and a listed 3/4-inch wet-location conduit hub.
 
-  Set part to "body", "faceplate", "flap", "faceplate_gasket",
-  "flap_seal", "conduit_gasket", "wall_mount_washer", "layout",
-  or "assembled".
+  Printable part values are "body", "faceplate", "flap",
+  "flap_integrated_asa", "flap_integrated_tpu",
+  "flap_with_integrated_seal", "faceplate_gasket", "flap_seal",
+  "conduit_gasket", and "wall_mount_washer".
 */
 
 $fn = 64;
 
-part = "assembled"; // body, faceplate, flap, faceplate_gasket, flap_seal, conduit_gasket, wall_mount_washer, layout, assembled
+part = "assembled"; // body, faceplate, flap, flap_integrated_asa, flap_integrated_tpu, flap_with_integrated_seal, faceplate_gasket, flap_seal, conduit_gasket, wall_mount_washer, hinge_clearance_check, layout, assembled
 preview_flap_angle = 105;
+hinge_test_angle = 90;
 
 // Enclosure dimensions
 box_width = 150;
@@ -33,11 +35,14 @@ faceplate_gasket_thickness = 2;
 faceplate_gasket_border = 14;
 flap_thickness = 4;
 flap_width = 148;
-flap_height = 176;
+flap_height = 166;
 flap_x = (box_width - flap_width) / 2;
 flap_z = 3;
 flap_inner_offset = 6;
 flap_seal_thickness = 2;
+integrated_anchor_hole_diameter = 3.2;
+integrated_anchor_head_diameter = 5.2;
+integrated_anchor_head_depth = 1.2;
 
 // Common NEMA 14-50R dimensions; verify the selected receptacle
 receptacle_center_x = box_width / 2;
@@ -77,16 +82,14 @@ wall_mount_washer_thickness = 1.5;
 hinge_pin_diameter = 1.75;
 hinge_clearance = 0.25;
 hinge_bore_diameter = hinge_pin_diameter + hinge_clearance;
-hinge_outer_diameter = 8;
+hinge_outer_diameter = 10;
 hinge_rotation_clearance = 0.6;
 hinge_axis_z =
     faceplate_height
     + hinge_outer_diameter / 2
     + hinge_rotation_clearance;
-hinge_axis_y = 6;
-hinge_neck_bottom = faceplate_height - 1;
-hinge_neck_top =
-    hinge_axis_z - hinge_outer_diameter / 4;
+hinge_axis_y = 10;
+hinge_anchor_height = 10;
 hinge_left_start = 9;
 hinge_outer_length = 30;
 hinge_center_start = 45;
@@ -98,14 +101,14 @@ magnet_center_z = 13;
 
 // Flap seal and raised rain curb
 seal_outer_width = 112;
-seal_outer_height = 150;
+seal_outer_height = 148;
 seal_ring_width = 6;
 seal_global_bottom = 20;
 curb_height = 1.2;
 curb_width = 3;
 
 // Front rain visor
-visor_depth = 16;
+visor_depth = 6;
 visor_height = 4;
 
 assert(
@@ -307,8 +310,13 @@ module body() {
     }
 }
 
-module hinge_barrel(start, length) {
-    difference() {
+module hinge_anchor(
+    start,
+    length,
+    leaf_y_min,
+    leaf_y_max
+) {
+    hull() {
         translate([
             start,
             hinge_axis_y,
@@ -318,6 +326,33 @@ module hinge_barrel(start, length) {
                 length,
                 hinge_outer_diameter
             );
+
+        translate([
+            start,
+            leaf_y_min,
+            faceplate_height - hinge_anchor_height
+        ])
+            cube([
+                length,
+                leaf_y_max - leaf_y_min,
+                hinge_anchor_height
+            ]);
+    }
+}
+
+module reinforced_hinge_barrel(
+    start,
+    length,
+    leaf_y_min,
+    leaf_y_max
+) {
+    difference() {
+        hinge_anchor(
+            start,
+            length,
+            leaf_y_min,
+            leaf_y_max
+        );
 
         translate([
             start - 0.1,
@@ -338,20 +373,12 @@ module faceplate_hinge_barrels() {
             - hinge_left_start
             - hinge_outer_length
     ]) {
-        union() {
-            hinge_barrel(start, hinge_outer_length);
-
-            translate([
-                start,
-                0,
-                hinge_neck_bottom
-            ])
-                cube([
-                    hinge_outer_length,
-                    faceplate_thickness,
-                    hinge_neck_top - hinge_neck_bottom
-                ]);
-        }
+        reinforced_hinge_barrel(
+            start,
+            hinge_outer_length,
+            0,
+            faceplate_thickness
+        );
     }
 }
 
@@ -469,26 +496,80 @@ module faceplate_gasket() {
 }
 
 module flap_hinge_barrel() {
-    union() {
-        hinge_barrel(
-            hinge_center_start,
-            hinge_center_length
-        );
+    reinforced_hinge_barrel(
+        hinge_center_start,
+        hinge_center_length,
+        flap_inner_offset,
+        flap_inner_offset + flap_thickness
+    );
+}
+
+integrated_anchor_centers = [
+    [50, seal_global_bottom - flap_z + seal_ring_width / 2],
+    [98, seal_global_bottom - flap_z + seal_ring_width / 2],
+    [
+        50,
+        seal_global_bottom
+            - flap_z
+            + seal_outer_height
+            - seal_ring_width / 2
+    ],
+    [
+        98,
+        seal_global_bottom
+            - flap_z
+            + seal_outer_height
+            - seal_ring_width / 2
+    ],
+    [
+        (flap_width - seal_outer_width) / 2
+            + seal_ring_width / 2,
+        70
+    ],
+    [
+        (flap_width + seal_outer_width) / 2
+            - seal_ring_width / 2,
+        70
+    ],
+    [
+        (flap_width - seal_outer_width) / 2
+            + seal_ring_width / 2,
+        112
+    ],
+    [
+        (flap_width + seal_outer_width) / 2
+            - seal_ring_width / 2,
+        112
+    ]
+];
+
+module integrated_anchor_cutouts() {
+    for (center = integrated_anchor_centers) {
+        translate([
+            center[0],
+            flap_inner_offset - 0.1,
+            center[1]
+        ])
+            cylinder_y(
+                flap_thickness + 0.2,
+                integrated_anchor_hole_diameter
+            );
 
         translate([
-            hinge_center_start,
-            flap_inner_offset,
-            hinge_neck_bottom
+            center[0],
+            flap_inner_offset
+                + flap_thickness
+                - integrated_anchor_head_depth,
+            center[1]
         ])
-            cube([
-                hinge_center_length,
-                flap_thickness,
-                hinge_neck_top - hinge_neck_bottom
-            ]);
+            cylinder_y(
+                integrated_anchor_head_depth + 0.2,
+                integrated_anchor_head_diameter
+            );
     }
 }
 
-module flap_cutouts() {
+module flap_cutouts(integrated_seal = false) {
     for (x = magnet_centers_x) {
         translate([
             x - flap_x,
@@ -500,9 +581,13 @@ module flap_cutouts() {
                 magnet_diameter
             );
     }
+
+    if (integrated_seal) {
+        integrated_anchor_cutouts();
+    }
 }
 
-module flap() {
+module flap(integrated_seal = false) {
     difference() {
         union() {
             translate([0, flap_inner_offset, 0])
@@ -528,7 +613,7 @@ module flap() {
             flap_hinge_barrel();
         }
 
-        flap_cutouts();
+        flap_cutouts(integrated_seal);
     }
 }
 
@@ -545,6 +630,47 @@ module flap_seal() {
             8,
             seal_ring_width
         );
+}
+
+module integrated_flap_seal() {
+    union() {
+        translate([
+            (flap_width - seal_outer_width) / 2,
+            flap_inner_offset - flap_seal_thickness,
+            seal_global_bottom - flap_z
+        ])
+            ring_front_prism(
+                seal_outer_width,
+                seal_outer_height,
+                flap_seal_thickness,
+                8,
+                seal_ring_width
+            );
+
+        for (center = integrated_anchor_centers) {
+            translate([
+                center[0],
+                flap_inner_offset - 0.05,
+                center[1]
+            ])
+                cylinder_y(
+                    flap_thickness + 0.1,
+                    integrated_anchor_hole_diameter - 0.2
+                );
+
+            translate([
+                center[0],
+                flap_inner_offset
+                    + flap_thickness
+                    - integrated_anchor_head_depth,
+                center[1]
+            ])
+                cylinder_y(
+                    integrated_anchor_head_depth,
+                    integrated_anchor_head_diameter - 0.2
+                );
+        }
+    }
 }
 
 module conduit_gasket() {
@@ -615,14 +741,29 @@ module faceplate_for_printing() {
             faceplate();
 }
 
-module flap_for_printing() {
+module flap_for_printing(integrated_seal = false) {
     translate([
         0,
         hinge_axis_z + hinge_outer_diameter / 2,
         flap_inner_offset + flap_thickness
     ])
         rotate([-90, 0, 0])
-            flap();
+            flap(integrated_seal);
+}
+
+module integrated_flap_seal_for_printing() {
+    translate([
+        0,
+        hinge_axis_z + hinge_outer_diameter / 2,
+        flap_inner_offset + flap_thickness
+    ])
+        rotate([-90, 0, 0])
+            integrated_flap_seal();
+}
+
+module flap_with_integrated_seal_for_printing() {
+    flap_for_printing(true);
+    integrated_flap_seal_for_printing();
 }
 
 module gasket_for_printing() {
@@ -651,13 +792,53 @@ module flap_assembly() {
             flap_x,
             box_depth
                 + faceplate_gasket_thickness
-                + faceplate_thickness
-                + curb_height
-                - flap_seal_thickness
-                + 0.2,
+                + flap_inner_offset
+                - flap_seal_thickness,
             flap_z
         ])
             flap_seal();
+}
+
+module positioned_faceplate() {
+    translate([
+        faceplate_x,
+        box_depth + faceplate_gasket_thickness,
+        faceplate_z
+    ])
+        faceplate();
+}
+
+module positioned_flap() {
+    translate([
+        flap_x,
+        box_depth + faceplate_gasket_thickness,
+        flap_z
+    ])
+        flap();
+}
+
+module rotated_flap(angle) {
+    hinge_global_y =
+        box_depth
+        + faceplate_gasket_thickness
+        + hinge_axis_y;
+    hinge_global_z = faceplate_z + hinge_axis_z;
+
+    translate([0, hinge_global_y, hinge_global_z])
+        rotate([angle, 0, 0])
+            translate([0, -hinge_global_y, -hinge_global_z])
+                positioned_flap();
+}
+
+module hinge_clearance_check(angle) {
+    intersection() {
+        union() {
+            body();
+            positioned_faceplate();
+        }
+
+        rotated_flap(angle);
+    }
 }
 
 module assembled() {
@@ -728,6 +909,12 @@ if (part == "body") {
     faceplate_for_printing();
 } else if (part == "flap") {
     flap_for_printing();
+} else if (part == "flap_integrated_asa") {
+    flap_for_printing(true);
+} else if (part == "flap_integrated_tpu") {
+    integrated_flap_seal_for_printing();
+} else if (part == "flap_with_integrated_seal") {
+    flap_with_integrated_seal_for_printing();
 } else if (part == "faceplate_gasket") {
     gasket_for_printing();
 } else if (part == "flap_seal") {
@@ -736,19 +923,25 @@ if (part == "body") {
     conduit_gasket();
 } else if (part == "wall_mount_washer") {
     wall_mount_washer();
+} else if (part == "hinge_clearance_check") {
+    hinge_clearance_check(hinge_test_angle);
 } else if (part == "layout") {
     body_for_printing();
-    translate([190, 0, 0])
+    translate([170, 0, 0])
         faceplate_for_printing();
-    translate([350, 0, 0])
+    translate([330, 0, 0])
         flap_for_printing();
-    translate([510, 0, 0])
+    translate([490, 0, 0])
+        flap_for_printing(true);
+    translate([650, 0, 0])
+        integrated_flap_seal_for_printing();
+    translate([810, 0, 0])
         gasket_for_printing();
-    translate([670, 0, 0])
+    translate([970, 0, 0])
         flap_seal_for_printing();
-    translate([820, 40, 0])
+    translate([1120, 40, 0])
         conduit_gasket();
-    translate([880, 40, 0])
+    translate([1180, 40, 0])
         wall_mount_washer();
 } else {
     rotate([0, 0, 180])

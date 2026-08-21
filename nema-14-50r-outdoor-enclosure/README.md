@@ -15,7 +15,10 @@ The flap protects the receptacle only while it is unplugged. It is not a listed 
 | [`nema_14_50r_outdoor_enclosure.scad`](nema_14_50r_outdoor_enclosure.scad) | Parametric OpenSCAD source | - |
 | [`body.stl`](body.stl) | Main enclosure with conduit boss and internal wall mounts | ASA |
 | [`faceplate.stl`](faceplate.stl) | Removable receptacle mounting plate | ASA |
-| [`flap.stl`](flap.stl) | Top-hinged rain flap with magnet pockets | ASA |
+| [`flap.stl`](flap.stl) | Standard rain flap for the separate seal | ASA |
+| [`flap-integrated-asa.stl`](flap-integrated-asa.stl) | Optional multi-material flap with TPU anchor recesses | ASA |
+| [`flap-integrated-tpu.stl`](flap-integrated-tpu.stl) | Aligned TPU seal and eight molded-through anchors | TPU |
+| [`flap-with-integrated-seal.stl`](flap-with-integrated-seal.stl) | Combined geometry for preview or single-material printing | ASA or TPU |
 | [`faceplate-gasket.stl`](faceplate-gasket.stl) | Seal between the body and faceplate | TPU |
 | [`flap-seal.stl`](flap-seal.stl) | Seal compressed by the closed flap | TPU |
 | [`conduit-gasket.stl`](conduit-gasket.stl) | Secondary washer beneath the conduit hub | TPU |
@@ -54,11 +57,14 @@ Do not substitute printed hardware for the receptacle fasteners, conduit locknut
 
 - Print the body with its rear wall on the build plate and the front opening facing upward.
 - Use local support inside the round conduit opening and beneath any visor edge your slicer cannot bridge cleanly.
-- Print the faceplate with its rear face on the build plate. The round hinge barrels and 2 mm bore may need local support or cleanup; verify the bore with scrap 1.75 mm filament before assembly.
-- Print the flap with its exterior face on the build plate. The modeled orientation keeps the flap and hinge block supported.
+- Print the faceplate with its rear face on the build plate. Each outer hinge knuckle is a continuous teardrop-shaped solid blending the 10 mm barrel into a 10 mm-deep, full-width anchor. Only the 2 mm horizontal bore may need cleanup; verify it with scrap 1.75 mm filament.
+- Print the flap with its exterior face on the build plate. Its center knuckle uses the same continuous teardrop profile, mirrored into the flap leaf.
 - Print all TPU seals flat.
+- For an attached two-material seal, import `flap-integrated-asa.stl` and `flap-integrated-tpu.stl` together as parts of one object without moving either file, then assign ASA and TPU respectively. The TPU fills eight through-holes and recessed heads, so retention does not depend only on ASA-to-TPU adhesion.
+- STL does not store material assignments. `flap-with-integrated-seal.stl` is included for geometry inspection or single-material printing; use the two aligned component STLs for a real ASA/TPU print.
+- ASA-to-TPU bonding varies by filament brand, temperature, and contamination. Test the pair first; the modeled anchors provide mechanical retention but do not guarantee a watertight material interface.
 - ASA is recommended for the rigid parts because of its UV and temperature resistance. Use an enclosure and the filament manufacturer's ventilation precautions.
-- Use at least 5 perimeters, 6 top and bottom layers, and 35-50% infill. Increase these values around the internal mounting bosses and hinge if your slicer supports modifiers.
+- Use at least 5 perimeters, 6 top and bottom layers, and 35-50% infill. Use 100% infill or a dense modifier across all three hinge barrels and their gussets.
 - TPU 95A is a practical starting point for the seals. Print them solid with 3-4 perimeters.
 
 ## Assembly
@@ -67,7 +73,7 @@ Do not substitute printed hardware for the receptacle fasteners, conduit locknut
 2. With the faceplate removed, mount the body through the two internal rear-wall bosses. Place one TPU washer under each screw head and apply an approved sealant around each rear-wall penetration.
 3. Install the four heat-set inserts in the faceplate bosses without overheating or distorting the front sealing surface.
 4. Mount the receptacle to the faceplate with metal screws, washers, and locknuts.
-5. Bond or lightly retain the TPU flap seal on the inside of the flap and the optional magnet pairs in their pockets. Confirm magnet polarity before adhesive cures.
+5. For the standard flap, bond or lightly retain `flap-seal.stl` on its inside face. For the multi-material flap, inspect all eight TPU anchor heads for complete fill and gently pull-test the seal. Install the optional magnet pairs and confirm polarity before adhesive cures.
 6. Place the flap's circular center barrel between the two circular faceplate barrels, then push straight 1.75 mm ASA filament through all three. The 4 mm gaps between barrels and radial clearance around the leaves allow the flap to rotate. Trim the filament with about 1 mm protruding at each end and carefully mushroom the ends with a temperature-controlled tool so the pin cannot slide out.
 7. Place the TPU faceplate gasket against the body and tighten the four M4 screws evenly. Do not crush the gasket or strip the inserts.
 8. Install the listed conduit hub through the top opening using its supplied seal. The printed TPU conduit gasket is only a secondary washer.
@@ -85,8 +91,13 @@ Do not substitute printed hardware for the receptacle fasteners, conduit locknut
 - `wall_mount_boss_diameter` and `wall_mount_boss_depth`: rear-wall reinforcement
 - `insert_pocket_diameter` and `insert_pocket_depth`: heat-set insert fit
 - `hinge_pin_diameter` and `hinge_clearance`: 1.75 mm filament hinge fit
+- `hinge_outer_diameter`: barrel strength; 10 mm provides about 4 mm of radial material around the bore
+- `hinge_anchor_height`: reinforced attachment length down each printed leaf
+- `integrated_anchor_hole_diameter` and `integrated_anchor_head_diameter`: mechanical retention for the optional co-printed TPU seal
 - `magnet_diameter` and `magnet_depth`: flap closure magnet fit
 - `faceplate_gasket_thickness` and `flap_seal_thickness`: TPU compression
 - `preview_flap_angle`: assembled preview opening angle
 
-Use `part="assembled"` for the preview. Printable values are `body`, `faceplate`, `flap`, `faceplate_gasket`, `flap_seal`, `conduit_gasket`, and `wall_mount_washer`.
+Use `part="assembled"` for the preview. Printable values are listed beside the `part` selector near the top of the source. `hinge_clearance_check` is a diagnostic value used to test the moving flap at `hinge_test_angle`.
+
+`part="layout"` displays the body, faceplate, standard flap, integrated ASA flap, aligned integrated TPU seal, separate gaskets, conduit gasket, and wall-mount washer.
