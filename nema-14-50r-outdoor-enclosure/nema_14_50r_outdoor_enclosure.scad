@@ -73,9 +73,9 @@ wall_mount_washer_diameter = 12.5;
 wall_mount_washer_hole_diameter = 6.8;
 wall_mount_washer_thickness = 1.5;
 
-// Hinge and magnetic closure
-hinge_pin_diameter = 3.2;
-hinge_clearance = 0.4;
+// Hinge sized for raw 1.75 mm ASA filament
+hinge_pin_diameter = 1.75;
+hinge_clearance = 0.25;
 hinge_bore_diameter = hinge_pin_diameter + hinge_clearance;
 hinge_axis_z = 176;
 hinge_axis_y = 6;

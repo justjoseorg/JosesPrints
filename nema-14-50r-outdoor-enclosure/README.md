@@ -42,7 +42,7 @@ Receptacle and conduit fitting dimensions vary by manufacturer. Measure the actu
 - Four M4 heat-set inserts, approximately 5.3 mm installation diameter and 7 mm long
 - Four M4 stainless faceplate screws, normally 16-20 mm long
 - Two receptacle screws with washers and locknuts sized for the selected receptacle
-- One 3 mm stainless rod, approximately 126 mm long, for the flap hinge
+- One straight piece of 1.75 mm ASA filament, approximately 135 mm long, for the flap hinge
 - Four optional 8 x 3 mm corrosion-resistant disc magnets, installed as two attracting pairs
 - Two corrosion-resistant wall screws and anchors appropriate for the wall
 - Two printed TPU wall-mount washers
@@ -54,7 +54,7 @@ Do not substitute printed hardware for the receptacle fasteners, conduit locknut
 
 - Print the body with its rear wall on the build plate and the front opening facing upward.
 - Use local support inside the round conduit opening and beneath any visor edge your slicer cannot bridge cleanly.
-- Print the faceplate with its rear face on the build plate. The 3.6 mm hinge bore may need a small amount of support or cleanup.
+- Print the faceplate with its rear face on the build plate. The 2 mm hinge bore may need a small amount of cleanup; verify it with scrap 1.75 mm filament before assembly.
 - Print the flap with its exterior face on the build plate. The modeled orientation keeps the flap and hinge block supported.
 - Print all TPU seals flat.
 - ASA is recommended for the rigid parts because of its UV and temperature resistance. Use an enclosure and the filament manufacturer's ventilation precautions.
@@ -68,7 +68,7 @@ Do not substitute printed hardware for the receptacle fasteners, conduit locknut
 3. Install the four heat-set inserts in the faceplate bosses without overheating or distorting the front sealing surface.
 4. Mount the receptacle to the faceplate with metal screws, washers, and locknuts.
 5. Bond or lightly retain the TPU flap seal on the inside of the flap and the optional magnet pairs in their pockets. Confirm magnet polarity before adhesive cures.
-6. Join the faceplate and flap with the 3 mm stainless hinge rod.
+6. Place the flap's center hinge knuckle between the two faceplate knuckles, then push straight 1.75 mm ASA filament through all three. Trim it with about 1 mm protruding at each end and carefully mushroom the ends with a temperature-controlled tool so the pin cannot slide out.
 7. Place the TPU faceplate gasket against the body and tighten the four M4 screws evenly. Do not crush the gasket or strip the inserts.
 8. Install the listed conduit hub through the top opening using its supplied seal. The printed TPU conduit gasket is only a secondary washer.
 9. After the electrician completes the wiring, inspect all seams and perform an appropriate water-ingress check with the circuit de-energized.
@@ -84,7 +84,7 @@ Do not substitute printed hardware for the receptacle fasteners, conduit locknut
 - `wall_screw_diameter` and `wall_screw_head_diameter`: wall fastener fit
 - `wall_mount_boss_diameter` and `wall_mount_boss_depth`: rear-wall reinforcement
 - `insert_pocket_diameter` and `insert_pocket_depth`: heat-set insert fit
-- `hinge_pin_diameter` and `hinge_clearance`: stainless rod fit
+- `hinge_pin_diameter` and `hinge_clearance`: 1.75 mm filament hinge fit
 - `magnet_diameter` and `magnet_depth`: flap closure magnet fit
 - `faceplate_gasket_thickness` and `flap_seal_thickness`: TPU compression
 - `preview_flap_angle`: assembled preview opening angle
