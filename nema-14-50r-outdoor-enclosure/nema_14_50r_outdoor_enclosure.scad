@@ -12,7 +12,7 @@
 
 $fn = 64;
 
-part = "assembled";
+part = "assembled"; // body, faceplate, flap, faceplate_gasket, flap_seal, conduit_gasket, wall_mount_washer, layout, assembled
 preview_flap_angle = 105;
 
 // Enclosure dimensions
