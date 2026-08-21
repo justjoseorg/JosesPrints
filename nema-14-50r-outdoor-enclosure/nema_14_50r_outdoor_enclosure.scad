@@ -63,7 +63,7 @@ faceplate_screw_z = [20, box_height - 20];
 conduit_hole_diameter = 28.8;
 conduit_boss_diameter = 44;
 conduit_boss_height = 4;
-conduit_center_y = 45;
+conduit_center_y = conduit_boss_diameter / 2;
 conduit_gasket_thickness = 2;
 
 // Internal rear-wall mounting bosses

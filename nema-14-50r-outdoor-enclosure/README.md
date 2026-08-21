@@ -13,7 +13,7 @@ The flap protects the receptacle only while it is unplugged. It is not a listed 
 | File | Description | Suggested material |
 | --- | --- | --- |
 | [`nema_14_50r_outdoor_enclosure.scad`](nema_14_50r_outdoor_enclosure.scad) | Parametric OpenSCAD source | - |
-| [`body.stl`](body.stl) | Main enclosure with conduit boss and internal wall mounts | ASA |
+| [`body.stl`](body.stl) | Main enclosure with rear-aligned top conduit boss and internal wall mounts | ASA |
 | [`faceplate.stl`](faceplate.stl) | Removable receptacle mounting plate | ASA |
 | [`flap.stl`](flap.stl) | Standard rain flap for the separate seal | ASA |
 | [`flap-integrated-asa.stl`](flap-integrated-asa.stl) | Optional multi-material flap with TPU anchor recesses | ASA |
@@ -33,6 +33,7 @@ The flap protects the receptacle only while it is unplugged. It is not a listed 
 - Receptacle body cutout: 60 mm diameter
 - Receptacle mounting-hole spacing: 83.3 mm center-to-center
 - Top conduit opening: 28.8 mm diameter for a typical 3/4-inch trade-size hub
+- Conduit center: 22 mm from the rear, making the modeled 44 mm hub/gasket footprint tangent to the mounting-wall plane
 - Internal wall mounting holes: 6.5 mm diameter with 13 mm counterbores
 - Wall mounting-hole spacing: 100 mm vertically on the enclosure centerline
 
