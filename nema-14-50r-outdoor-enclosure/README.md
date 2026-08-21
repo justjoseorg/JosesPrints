@@ -2,7 +2,7 @@
 
 ![Rendered NEMA 14-50R outdoor enclosure](preview.png)
 
-A parametric wall-mounted enclosure for a common panel-mount NEMA 14-50R receptacle. The ASA shell has an open front with a gasketed removable faceplate, a top 3/4-inch trade-size conduit entry, two reinforced internal wall-mounting holes, and a top-hinged rain flap. Separate TPU parts seal the faceplate, flap, conduit hub, and wall fasteners.
+A parametric wall-mounted enclosure for a common panel-mount NEMA 14-50R receptacle. The ASA shell has an open front with a gasketed removable faceplate, a top 3/4-inch trade-size conduit entry, two reinforced internal wall-mounting holes, and a rain flap on separated circular hinge barrels. Separate TPU parts seal the faceplate, flap, conduit hub, and wall fasteners.
 
 The flap protects the receptacle only while it is unplugged. It is not a listed extra-duty in-use cover and cannot close over an EV charging plug.
 
@@ -54,7 +54,7 @@ Do not substitute printed hardware for the receptacle fasteners, conduit locknut
 
 - Print the body with its rear wall on the build plate and the front opening facing upward.
 - Use local support inside the round conduit opening and beneath any visor edge your slicer cannot bridge cleanly.
-- Print the faceplate with its rear face on the build plate. The 2 mm hinge bore may need a small amount of cleanup; verify it with scrap 1.75 mm filament before assembly.
+- Print the faceplate with its rear face on the build plate. The round hinge barrels and 2 mm bore may need local support or cleanup; verify the bore with scrap 1.75 mm filament before assembly.
 - Print the flap with its exterior face on the build plate. The modeled orientation keeps the flap and hinge block supported.
 - Print all TPU seals flat.
 - ASA is recommended for the rigid parts because of its UV and temperature resistance. Use an enclosure and the filament manufacturer's ventilation precautions.
@@ -68,7 +68,7 @@ Do not substitute printed hardware for the receptacle fasteners, conduit locknut
 3. Install the four heat-set inserts in the faceplate bosses without overheating or distorting the front sealing surface.
 4. Mount the receptacle to the faceplate with metal screws, washers, and locknuts.
 5. Bond or lightly retain the TPU flap seal on the inside of the flap and the optional magnet pairs in their pockets. Confirm magnet polarity before adhesive cures.
-6. Place the flap's center hinge knuckle between the two faceplate knuckles, then push straight 1.75 mm ASA filament through all three. Trim it with about 1 mm protruding at each end and carefully mushroom the ends with a temperature-controlled tool so the pin cannot slide out.
+6. Place the flap's circular center barrel between the two circular faceplate barrels, then push straight 1.75 mm ASA filament through all three. The 4 mm gaps between barrels and radial clearance around the leaves allow the flap to rotate. Trim the filament with about 1 mm protruding at each end and carefully mushroom the ends with a temperature-controlled tool so the pin cannot slide out.
 7. Place the TPU faceplate gasket against the body and tighten the four M4 screws evenly. Do not crush the gasket or strip the inserts.
 8. Install the listed conduit hub through the top opening using its supplied seal. The printed TPU conduit gasket is only a secondary washer.
 9. After the electrician completes the wiring, inspect all seams and perform an appropriate water-ingress check with the circuit de-energized.

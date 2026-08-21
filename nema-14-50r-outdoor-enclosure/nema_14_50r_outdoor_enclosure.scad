@@ -28,14 +28,14 @@ faceplate_width = 144;
 faceplate_height = 176;
 faceplate_thickness = 4;
 faceplate_x = (box_width - faceplate_width) / 2;
-faceplate_z = 7;
+faceplate_z = 3;
 faceplate_gasket_thickness = 2;
 faceplate_gasket_border = 14;
 flap_thickness = 4;
 flap_width = 148;
 flap_height = 176;
 flap_x = (box_width - flap_width) / 2;
-flap_z = 7;
+flap_z = 3;
 flap_inner_offset = 6;
 flap_seal_thickness = 2;
 
@@ -77,10 +77,16 @@ wall_mount_washer_thickness = 1.5;
 hinge_pin_diameter = 1.75;
 hinge_clearance = 0.25;
 hinge_bore_diameter = hinge_pin_diameter + hinge_clearance;
-hinge_axis_z = 176;
+hinge_outer_diameter = 8;
+hinge_rotation_clearance = 0.6;
+hinge_axis_z =
+    faceplate_height
+    + hinge_outer_diameter / 2
+    + hinge_rotation_clearance;
 hinge_axis_y = 6;
-hinge_block_height = 10;
-hinge_block_depth = 12;
+hinge_neck_bottom = faceplate_height - 1;
+hinge_neck_top =
+    hinge_axis_z - hinge_outer_diameter / 4;
 hinge_left_start = 9;
 hinge_outer_length = 30;
 hinge_center_start = 45;
@@ -301,34 +307,50 @@ module body() {
     }
 }
 
-module faceplate_hinge_blocks() {
+module hinge_barrel(start, length) {
+    difference() {
+        translate([
+            start,
+            hinge_axis_y,
+            hinge_axis_z
+        ])
+            cylinder_x(
+                length,
+                hinge_outer_diameter
+            );
+
+        translate([
+            start - 0.1,
+            hinge_axis_y,
+            hinge_axis_z
+        ])
+            cylinder_x(
+                length + 0.2,
+                hinge_bore_diameter
+            );
+    }
+}
+
+module faceplate_hinge_barrels() {
     for (start = [
         hinge_left_start,
         faceplate_width
             - hinge_left_start
             - hinge_outer_length
     ]) {
-        difference() {
+        union() {
+            hinge_barrel(start, hinge_outer_length);
+
             translate([
                 start,
                 0,
-                hinge_axis_z - hinge_block_height / 2
+                hinge_neck_bottom
             ])
                 cube([
                     hinge_outer_length,
-                    hinge_block_depth,
-                    hinge_block_height
+                    faceplate_thickness,
+                    hinge_neck_top - hinge_neck_bottom
                 ]);
-
-            translate([
-                start - 0.1,
-                hinge_axis_y,
-                hinge_axis_z
-            ])
-                cylinder_x(
-                    hinge_outer_length + 0.2,
-                    hinge_bore_diameter
-                );
         }
     }
 }
@@ -412,7 +434,7 @@ module faceplate() {
                 faceplate_thickness,
                 5
             );
-            faceplate_hinge_blocks();
+            faceplate_hinge_barrels();
             faceplate_curb();
         }
 
@@ -446,28 +468,23 @@ module faceplate_gasket() {
     }
 }
 
-module flap_hinge_block() {
-    difference() {
+module flap_hinge_barrel() {
+    union() {
+        hinge_barrel(
+            hinge_center_start,
+            hinge_center_length
+        );
+
         translate([
             hinge_center_start,
-            0,
-            hinge_axis_z - hinge_block_height / 2
+            flap_inner_offset,
+            hinge_neck_bottom
         ])
             cube([
                 hinge_center_length,
-                flap_inner_offset + flap_thickness,
-                hinge_block_height
+                flap_thickness,
+                hinge_neck_top - hinge_neck_bottom
             ]);
-
-        translate([
-            hinge_center_start - 0.1,
-            hinge_axis_y,
-            hinge_axis_z
-        ])
-            cylinder_x(
-                hinge_center_length + 0.2,
-                hinge_bore_diameter
-            );
     }
 }
 
@@ -499,7 +516,7 @@ module flap() {
             translate([
                 (flap_width - 34) / 2,
                 flap_inner_offset,
-                -4
+                -3
             ])
                 front_prism(
                     34,
@@ -508,7 +525,7 @@ module flap() {
                     4
                 );
 
-            flap_hinge_block();
+            flap_hinge_barrel();
         }
 
         flap_cutouts();
@@ -591,7 +608,7 @@ module body_for_printing() {
 module faceplate_for_printing() {
     translate([
         0,
-        faceplate_height + hinge_block_height / 2,
+        hinge_axis_z + hinge_outer_diameter / 2,
         0
     ])
         rotate([90, 0, 0])
@@ -601,7 +618,7 @@ module faceplate_for_printing() {
 module flap_for_printing() {
     translate([
         0,
-        flap_height + hinge_block_height / 2,
+        hinge_axis_z + hinge_outer_diameter / 2,
         flap_inner_offset + flap_thickness
     ])
         rotate([-90, 0, 0])
