@@ -53,7 +53,9 @@ Before committing a model change:
 1. Render every printable part to STL without OpenSCAD errors or assertions.
 2. Render the assembled PNG and inspect it for missing, intersecting, or separated pieces.
 3. Confirm each expected artifact is non-empty and stored beside its source.
-4. Update dimensions and printing notes in the folder README.
-5. Ensure all relative README links and preview images resolve on GitHub.
+4. Always check for collisions: in the assembled render (and any relevant moving-part check, e.g. `hinge_clearance_check`), verify no two parts intersect where they should not, and that mating/moving parts (screws, hinges, plugs, gaskets) have real, intentional clearance instead of relying on visual inspection alone.
+5. When a design expects two or more printed parts to be structurally attached to each other (e.g. co-printed multi-material pieces, snap-fits, integrated anchors, or hinge barrels sharing a pin), confirm in the assembled render and part geometry that the attachment feature is actually present, correctly sized, and connects the parts as intended before committing.
+6. Update dimensions and printing notes in the folder README.
+7. Ensure all relative README links and preview images resolve on GitHub.
 
 Keep unrelated model folders unchanged.
