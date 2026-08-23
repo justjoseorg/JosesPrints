@@ -58,4 +58,6 @@ Before committing a model change:
 6. Update dimensions and printing notes in the folder README.
 7. Ensure all relative README links and preview images resolve on GitHub.
 
+When finished with a model change, open the `.scad` file in the OpenSCAD GUI (e.g. `openscad model_name.scad &`) so the project can be visually inspected. If the model defines more than one printable object, expose a `layout` part value that lays out every part side by side, in addition to the `assembled` part, and open the GUI with `part` set so at least one of those views is easy to reach (for example `openscad -D 'part="layout"' model_name.scad &`).
+
 Keep unrelated model folders unchanged.
