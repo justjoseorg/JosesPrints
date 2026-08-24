@@ -65,10 +65,8 @@ flap_width = lid_width + 2 * flap_side_overlap;
 flap_height = lid_height - flap_top_clearance + flap_bottom_overlap;
 flap_x = -flap_side_overlap;
 flap_thickness = 4;
-flap_seal_thickness = 2;
+flap_seal_thickness = 2.4;
 flap_seal_ring_width = 8;
-flap_curb_ring_width = 3;
-flap_curb_height = 1.4;
 
 // ===================== Gaskets =====================
 gasket_thickness = 2;
@@ -262,44 +260,6 @@ module lid_shell() {
             corner_radius
         );
 
-        // Raised curb at the front rim for the flap seal to register on.
-        // Notched at each hinge barrel's X span (with margin) because the
-        // convex hull of the flap's hinge anchor sweeps through that exact
-        // top-edge Y/Z zone; without the notch it grazes the curb's top
-        // band even at rest (angle 0), so it is cut away only where the
-        // stationary/rotating hinge barrels actually sit.
-        difference() {
-            translate([0, lid_depth, 0])
-                ring_front_prism(
-                    lid_width - 2 * (wall_thickness - flap_curb_ring_width / 2),
-                    lid_height - 2 * (wall_thickness - flap_curb_ring_width / 2),
-                    flap_curb_height,
-                    corner_radius,
-                    flap_curb_ring_width
-                );
-
-            for (zone = [
-                [hinge_left_start, hinge_outer_length],
-                [lid_width - hinge_left_start - hinge_outer_length, hinge_outer_length],
-                [hinge_center_start, hinge_center_length]
-            ]) {
-                // The outer hinge zones sit right at the curb's rounded
-                // corners (hinge_left_start == corner_radius). A fixed
-                // 4 mm margin on the cut left a thin curved sliver of
-                // ring material between the cut and the corner's curve,
-                // barely attached to the rest of the curb. Extend the
-                // cut all the way to the nearest side edge whenever the
-                // zone (with margin) reaches into the corner radius, so
-                // no such sliver remains.
-                x_min = (zone[0] - 4 <= corner_radius) ? 0 : zone[0] - 4;
-                x_max = (zone[0] + zone[1] + 4 >= lid_width - corner_radius)
-                    ? lid_width
-                    : zone[0] + zone[1] + 4;
-                translate([x_min, lid_depth - 1, lid_height - flap_curb_ring_width - 4])
-                    cube([x_max - x_min, flap_curb_height + 2, flap_curb_ring_width + 6]);
-            }
-        }
-
         lid_hinge_barrels();
     }
 }
@@ -376,10 +336,12 @@ module flap_assembly() {
 }
 
 // A flat ring matching the flap leaf's own footprint, bonded to the
-// flap's back face so it compresses against the lid's front-rim curb
-// when closed. It intentionally does not extend into the top ~6 mm
-// clearance strip reserved for the hinge barrels; that strip is
-// shielded by the ASA-to-ASA hinge fit itself rather than by a gasket.
+// flap's back face. It is 0.4 mm thicker than the nominal closed gap,
+// giving controlled compression against the lid's flat front rim without
+// a raised hard curb that could hold the flap open. It intentionally does
+// not extend into the top clearance strip reserved for the hinge barrels;
+// that strip is shielded by the ASA-to-ASA hinge fit itself rather than by
+// a gasket.
 module flap_seal() {
     translate([0, flap_leaf_y_start - flap_seal_thickness, -flap_bottom_overlap])
         ring_front_prism(

@@ -20,7 +20,7 @@ when the receptacle isn't in use.
 | `lid.stl` | ASA | Shroud + back plate + 2 stationary hinge barrels, bolts to the box |
 | `flap.stl` | ASA | Hinged flap leaf + its own hinge barrel, pinned to the lid |
 | `lid_gasket.stl` | TPU | Flat gasket between the lid's back plate and the box face |
-| `flap_seal.stl` | TPU | Ring gasket bonded to the back of the flap, seals against the lid's front curb when closed |
+| `flap_seal.stl` | TPU | 2.4 mm ring gasket bonded to the flap; compresses 0.4 mm against the lid's flat front rim |
 | `preview.png` | — | Rendered assembled preview (flap open) |
 
 ## Important: verify your own hardware first
@@ -76,11 +76,7 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
   hinge anchors are tied down to the back plate with a built-in solid
   support rib (`hinge_support_rib()`), so they no longer cantilever over an
   open gap. The shroud walls, hinge barrels, and ribs rise upward with no
-  large overhangs; slicer auto-supports can be left off (set support
-  threshold to ~50-55° / "support on build plate only" if your slicer
-  still flags the small self-bridging notches in the front curb ring where
-  it's relieved for hinge clearance — those are a few millimeters wide and
-  print fine unsupported).
+  large overhangs; slicer auto-supports can be left off.
 - **`flap`**: print flat, back face down (as oriented by
   `flap_for_printing()`); no supports needed.
 - **`lid_gasket` / `flap_seal`** (TPU): print flat, no supports. Use a slower
@@ -99,8 +95,8 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
 4. Bolt the `lid` to the box using the box's existing two diagonal cover
    screws, compressing the gasket.
 5. Bond `flap_seal` to the back of the `flap` leaf (super glue or solvent
-   weld); when the flap is closed it compresses against the raised curb
-   on the lid's front rim, sealing the opening against rain.
+   weld); when the flap is closed, its 2.4 mm thickness compresses about
+   0.4 mm against the lid's flat front rim to seal against rain.
 
 ## Design notes / limitations
 
