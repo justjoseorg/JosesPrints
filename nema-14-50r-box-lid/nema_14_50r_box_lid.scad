@@ -74,6 +74,11 @@ flap_curb_height = 1.4;
 // ===================== Gaskets =====================
 gasket_thickness = 2;
 gasket_border = 12;
+// Both gaskets nest into a shallow press-fit channel on their mating ASA
+// part so they stay captured and centered instead of relying on glue
+// alone; the channel is shallower than the gasket so the TPU still
+// protrudes to make the actual sealing contact and compression.
+gasket_channel_depth = 0.8;
 
 // ===================== Hinge (sized for raw 1.75 mm filament) =====================
 hinge_pin_diameter = 1.75;
@@ -279,6 +284,17 @@ module lid_cutouts() {
     translate([receptacle_center_x_lid, -0.1, receptacle_center_z_lid])
         cylinder_y(flange_thickness + 0.2, receptacle_clearance_diameter);
 
+    // Shallow press-fit channel on the box-facing side of the back plate,
+    // matching the lid_gasket's ring footprint so the TPU gasket seats
+    // and stays captured instead of relying on glue/friction alone.
+    ring_front_prism(
+        lid_width,
+        lid_height,
+        gasket_channel_depth,
+        corner_radius,
+        gasket_border
+    );
+
     for (signs = [[1, 1], [-1, -1]]) {
         x = lid_width / 2 + signs[0] * box_mount_offset;
         z = lid_height / 2 + signs[1] * box_mount_offset;
@@ -335,8 +351,22 @@ module lid_gasket() {
 }
 
 module flap() {
-    translate([0, flap_leaf_y_start, -flap_bottom_overlap])
-        front_prism(flap_width, flap_height, flap_thickness, 8);
+    difference() {
+        translate([0, flap_leaf_y_start, -flap_bottom_overlap])
+            front_prism(flap_width, flap_height, flap_thickness, 8);
+
+        // Shallow press-fit channel on the flap's rear face (the face
+        // bonded to the flap_seal gasket) so the TPU ring seats into the
+        // leaf instead of relying on glue/friction alone.
+        translate([0, flap_leaf_y_start - 0.1, -flap_bottom_overlap])
+            ring_front_prism(
+                flap_width,
+                flap_height,
+                gasket_channel_depth + 0.1,
+                8,
+                flap_seal_ring_width
+            );
+    }
 }
 
 module flap_assembly() {
