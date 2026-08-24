@@ -194,6 +194,22 @@ module reinforced_hinge_barrel(
     }
 }
 
+// The stationary hinge anchors sit at Y = lid_depth-hinge_anchor_height..
+// lid_depth (near the front rim) but their X span (away from the side
+// walls) has no shroud wall material underneath, in the depth
+// direction, back to the flange. Printed flat-on-the-back-plate, that
+// left a ~27 mm unsupported bridge under each anchor. This solid rib
+// fills that gap, in the print's vertical (build) direction, from the
+// back flange up to the anchor's underside, so nothing overhangs.
+module hinge_support_rib(start, length) {
+    translate([start, flange_thickness, lid_height - hinge_anchor_height])
+        cube([
+            length,
+            (lid_depth - hinge_anchor_height) - flange_thickness,
+            hinge_anchor_height
+        ]);
+}
+
 module lid_hinge_barrels() {
     for (start = [
         hinge_left_start,
@@ -206,6 +222,8 @@ module lid_hinge_barrels() {
             lid_depth,
             lid_height
         );
+
+        hinge_support_rib(start, hinge_outer_length);
     }
 }
 

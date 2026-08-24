@@ -72,9 +72,15 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
 ## Print orientation and supports
 
 - **`lid`**: print with the back plate face-down on the bed (as oriented by
-  the `lid_for_printing()` module used by the `lid` part). The shroud walls
-  and hinge barrels rise upward with no overhangs beyond 45°; no supports
-  needed.
+  the `lid_for_printing()` module used by the `lid` part). The stationary
+  hinge anchors are tied down to the back plate with a built-in solid
+  support rib (`hinge_support_rib()`), so they no longer cantilever over an
+  open gap. The shroud walls, hinge barrels, and ribs rise upward with no
+  large overhangs; slicer auto-supports can be left off (set support
+  threshold to ~50-55° / "support on build plate only" if your slicer
+  still flags the small self-bridging notches in the front curb ring where
+  it's relieved for hinge clearance — those are a few millimeters wide and
+  print fine unsupported).
 - **`flap`**: print flat, back face down (as oriented by
   `flap_for_printing()`); no supports needed.
 - **`lid_gasket` / `flap_seal`** (TPU): print flat, no supports. Use a slower
