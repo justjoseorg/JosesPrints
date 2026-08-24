@@ -5,12 +5,12 @@
 A weatherproof **lid only** for a NEMA 14-50R receptacle that is already
 installed in a square EMT double box mounted on an outdoor wall. It does
 **not** replace or include the box — it bolts directly onto the box's two
-existing diagonal cover screws (commonly top-right and bottom-left) using the
-box's own tapped holes. A shallow ASA shroud clears the receptacle face and
-carries a top hinge; a flap swings up on a pin made from raw 1.75 mm filament
-so a cord can exit at the bottom while a car (or other 50 A load) is plugged
-in, and swings back down to compress a TPU gasket over the opening when the
-receptacle isn't in use.
+existing diagonal cover screws (top-left and bottom-right on this box) using
+the box's own tapped holes. A shallow ASA shroud clears the receptacle face
+and carries a top hinge; a flap swings up on a pin made from raw 1.75 mm
+filament so a cord can exit at the bottom while a car (or other 50 A load) is
+plugged in, and swings back down to compress a TPU gasket over the opening
+when the receptacle isn't in use.
 
 ## Files
 
@@ -25,28 +25,34 @@ receptacle isn't in use.
 
 ## Important: verify your own hardware first
 
-The defaults assume:
+The defaults are set from this box's actual measurements:
 
-- A **4-11/16 in (119 mm) square** EMT box front opening.
-- Cover screws spaced **5-1/2 in (139.7 mm)** apart on the diagonal (the
-  box's own existing top-right/bottom-left screws).
+- **3.65 in (92.7 mm) square** internal box opening (measured, not a
+  nominal industry size).
+- Cover screws spaced **135 mm** apart on the diagonal, positioned
+  **top-left and bottom-right** (measured).
+- Screw shank diameter **3 mm** (measured), with a 3.6 mm clearance hole
+  and a 6.5 mm head-clearance counterbore.
 - A NEMA 14-50R flush receptacle with a face/bezel around **66 mm** in
-  diameter clearance.
+  diameter clearance (not yet re-measured against this specific box —
+  double check before printing).
 
-These are the most common industry-standard values for this description, but
-boxes, mud rings, and receptacles vary by manufacturer. **Measure your own box
-opening, screw spacing, and receptacle face before printing**, and adjust the
-parameters at the top of the `.scad` file (`box_face_width/height`,
-`box_mount_diagonal`, `receptacle_clearance_diameter`) if they differ.
+If your box, screws, or receptacle differ from these measurements, adjust
+the parameters at the top of the `.scad` file (`box_face_width/height`,
+`box_mount_diagonal`, `box_mount_screw_clearance`,
+`box_mount_head_diameter`, `receptacle_clearance_diameter`) before
+printing. The mounting-hole sign pattern (`[[-1, 1], [1, -1]]` in
+`lid_cutouts()` and `lid_gasket()`) encodes top-left/bottom-right; flip it
+to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
 
 ## Dimensions (as designed)
 
-- Lid overall: 145 x 145 mm, 42 mm forward projection from the box face
+- Lid overall: 118.7 x 118.7 mm, 42 mm forward projection from the box face
   (room for the hinge, the closed flap, and a cord bend at the bottom).
 - Wall thickness: 3.2 mm. Back plate (against the box face): 5 mm.
-- Flap: 153 x 133 mm leaf, 4 mm thick, overlapping the lid on the sides and
-  bottom by 4 mm each to shed water; kept clear of the lid's top edge/hinge
-  zone.
+- Flap: 126.7 x 106.7 mm leaf, 4 mm thick, overlapping the lid on the sides
+  and bottom by 4 mm each to shed water; kept clear of the lid's top
+  edge/hinge zone.
 - Hinge: sized for a raw **1.75 mm** 3D-printer filament strand as the pin,
   running through printed knuckles (two stationary barrels on the lid, one
   center barrel on the flap) with 0.25 mm bore clearance and 0.6 mm swing
@@ -59,7 +65,7 @@ parameters at the top of the `.scad` file (`box_face_width/height`,
 
 ## Hardware
 
-- 2x screws already in your box (top-right/bottom-left) — reused, not
+- 2x screws already in your box (top-left/bottom-right) — reused, not
   supplied by this design.
 - 1x length of 1.75 mm filament (any material) cut to size, used as the
   hinge pin.

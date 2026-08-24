@@ -2,8 +2,8 @@
   NEMA 14-50R weatherproof lid for an existing square EMT box
 
   This is a lid only. It does not replace or include a wall box: it
-  bolts directly to the two existing diagonal cover screws (commonly
-  top-right and bottom-left) already tapped into a square EMT box that
+  bolts directly to the two existing diagonal cover screws (top-left and
+  bottom-right on this box) already tapped into a square EMT box that
   is already mounted on the wall with a NEMA 14-50R receptacle inside
   it. A shallow ASA shroud clears the receptacle face, and a top-hinged
   ASA flap, pinned with plain 1.75 mm filament running through printed
@@ -11,12 +11,11 @@
   plugged in and closes down over a TPU seal when the receptacle is
   not in use.
 
-  MEASURE YOUR OWN BOX, ITS SCREW SPACING, AND YOUR RECEPTACLE BEFORE
-  PRINTING. The defaults below match the common industry-standard
-  4-11/16 in (119 mm) square box with cover screws spaced 5-1/2 in
-  (139.7 mm) apart on the diagonal, which is the most likely match for
-  "a square EMT double box with screws top-right and bottom-left," but
-  boxes, mud rings, and receptacles vary by manufacturer.
+  Defaults below are measured from this specific box: 3.65 in (92.7 mm)
+  square internal opening, cover screws spaced 135 mm apart on the
+  diagonal (top-left/bottom-right), 3 mm screw shank diameter. MEASURE
+  YOUR OWN BOX, SCREW SPACING/POSITION, AND RECEPTACLE BEFORE PRINTING
+  if yours differs.
 
   Printable part values: "lid", "flap", "lid_gasket", "flap_seal",
   "hinge_clearance_check", "layout", "assembled".
@@ -29,13 +28,13 @@ preview_flap_angle = 100;
 hinge_test_angle = 90;
 
 // ===================== Existing wall box (MEASURE YOURS) =====================
-box_face_width = 119;        // 4-11/16 in square box front opening
-box_face_height = 119;
-box_mount_diagonal = 139.7;  // 5.5 in center-to-center, the box's own top-right/bottom-left screws
+box_face_width = 92.7;        // 3.65 in measured internal box opening
+box_face_height = 92.7;
+box_mount_diagonal = 135;    // measured diagonal spacing of the box's own top-left/bottom-right screws
 box_mount_offset =
     box_mount_diagonal / (2 * sqrt(2)); // per-axis offset of each screw from the box/lid center
-box_mount_screw_clearance = 4.5;  // clearance hole for the box's existing cover screws
-box_mount_head_diameter = 9;      // clearance for a pan/oval screw head
+box_mount_screw_clearance = 3.6;  // clearance hole for the box's 3mm-shank cover screws
+box_mount_head_diameter = 6.5;    // clearance for a pan/oval screw head
 box_mount_counterbore_depth = 3;
 
 // ===================== Receptacle clearance =====================
@@ -45,8 +44,8 @@ receptacle_clearance_diameter = 66;
 
 // ===================== Lid shroud =====================
 lid_margin = 13;                               // lid overlap beyond the box face, each side
-lid_width = box_face_width + 2 * lid_margin;   // 145
-lid_height = box_face_height + 2 * lid_margin; // 145
+lid_width = box_face_width + 2 * lid_margin;   // 118.7
+lid_height = box_face_height + 2 * lid_margin; // 118.7
 lid_depth = 42;         // forward projection: hinge, closed flap, and room for a plugged-in cord bend
 wall_thickness = 3.2;
 flange_thickness = 5;   // back plate thickness against the box face
@@ -90,9 +89,9 @@ hinge_axis_z = lid_height + hinge_outer_diameter / 2 + hinge_rotation_clearance;
 hinge_axis_y = lid_depth + 6;
 hinge_anchor_height = 10;
 hinge_left_start = 10;
-hinge_outer_length = 32;
-hinge_center_start = 48; // in the flap's own local X coordinate
-hinge_center_length = 57;
+hinge_outer_length = 20;
+hinge_center_start = 38; // in the flap's own local X coordinate
+hinge_center_length = 48;
 
 flap_leaf_y_start = lid_depth + 2;
 
@@ -295,7 +294,7 @@ module lid_cutouts() {
         gasket_border
     );
 
-    for (signs = [[1, 1], [-1, -1]]) {
+    for (signs = [[-1, 1], [1, -1]]) {  // top-left, bottom-right
         x = lid_width / 2 + signs[0] * box_mount_offset;
         z = lid_height / 2 + signs[1] * box_mount_offset;
 
@@ -337,7 +336,7 @@ module lid_gasket() {
         translate([receptacle_center_x_lid, -0.1, receptacle_center_z_lid])
             cylinder_y(gasket_thickness + 0.2, receptacle_clearance_diameter);
 
-        for (signs = [[1, 1], [-1, -1]]) {
+        for (signs = [[-1, 1], [1, -1]]) {  // top-left, bottom-right
             x = lid_width / 2 + signs[0] * box_mount_offset;
             z = lid_height / 2 + signs[1] * box_mount_offset;
 
