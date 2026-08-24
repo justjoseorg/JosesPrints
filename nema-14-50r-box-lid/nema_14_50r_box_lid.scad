@@ -283,8 +283,20 @@ module lid_shell() {
                 [lid_width - hinge_left_start - hinge_outer_length, hinge_outer_length],
                 [hinge_center_start, hinge_center_length]
             ]) {
-                translate([zone[0] - 4, lid_depth - 1, lid_height - flap_curb_ring_width - 4])
-                    cube([zone[1] + 8, flap_curb_height + 2, flap_curb_ring_width + 6]);
+                // The outer hinge zones sit right at the curb's rounded
+                // corners (hinge_left_start == corner_radius). A fixed
+                // 4 mm margin on the cut left a thin curved sliver of
+                // ring material between the cut and the corner's curve,
+                // barely attached to the rest of the curb. Extend the
+                // cut all the way to the nearest side edge whenever the
+                // zone (with margin) reaches into the corner radius, so
+                // no such sliver remains.
+                x_min = (zone[0] - 4 <= corner_radius) ? 0 : zone[0] - 4;
+                x_max = (zone[0] + zone[1] + 4 >= lid_width - corner_radius)
+                    ? lid_width
+                    : zone[0] + zone[1] + 4;
+                translate([x_min, lid_depth - 1, lid_height - flap_curb_ring_width - 4])
+                    cube([x_max - x_min, flap_curb_height + 2, flap_curb_ring_width + 6]);
             }
         }
 
