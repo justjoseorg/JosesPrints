@@ -57,11 +57,8 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
   running through printed knuckles (two stationary barrels on the lid, one
   center barrel on the flap) with 0.25 mm bore clearance and 0.6 mm swing
   clearance between the flap barrel and the lid barrels.
-- Gaskets: 2 mm thick TPU, printed flat. Each gasket press-fits into a
-  shallow **0.8 mm deep channel** molded into its mating ASA part
-  (`lid` for `lid_gasket`, `flap` for `flap_seal`) so it self-centers and
-  stays captured during assembly; the gasket still stands proud of the
-  channel by 1.2 mm to do the actual sealing/compression.
+- Gaskets: 2 mm thick TPU, printed flat, bonded to their mating ASA part
+  with adhesive (no press-fit channel).
 
 ## Hardware
 
@@ -91,15 +88,13 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
 2. Slide the 1.75 mm filament pin through the lid's two outer hinge barrels
    and the flap's center hinge barrel to join them. Trim flush and, if
    desired, lightly melt/flare each end so the pin can't slide out.
-3. Press `lid_gasket` into the shallow channel molded into the back of
-   the `lid`; it self-centers and stays captured against the receptacle
-   opening and the two mounting holes without needing glue.
+3. Bond `lid_gasket` to the back of the `lid` (super glue or solvent weld),
+   aligned with the receptacle opening and the two mounting holes.
 4. Bolt the `lid` to the box using the box's existing two diagonal cover
    screws, compressing the gasket.
-5. Press `flap_seal` into the matching channel on the back of the `flap`
-   leaf (glue optional, since the press fit alone holds it); when the
-   flap is closed it compresses against the raised curb on the lid's
-   front rim, sealing the opening against rain.
+5. Bond `flap_seal` to the back of the `flap` leaf (super glue or solvent
+   weld); when the flap is closed it compresses against the raised curb
+   on the lid's front rim, sealing the opening against rain.
 
 ## Design notes / limitations
 
