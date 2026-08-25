@@ -12,7 +12,7 @@
   not in use.
 
   Defaults below are measured from this specific box: 3.65 in (92.7 mm)
-  square internal opening, cover screws spaced 135 mm apart on the
+  square internal opening, cover screws spaced 132 mm apart on the
   diagonal (top-left/bottom-right), 3 mm screw shank diameter. MEASURE
   YOUR OWN BOX, SCREW SPACING/POSITION, AND RECEPTACLE BEFORE PRINTING
   if yours differs.
@@ -30,7 +30,7 @@ hinge_test_angle = 90;
 // ===================== Existing wall box (MEASURE YOURS) =====================
 box_face_width = 92.7;        // 3.65 in measured internal box opening
 box_face_height = 92.7;
-box_mount_diagonal = 135;    // measured diagonal spacing of the box's own top-left/bottom-right screws
+box_mount_diagonal = 132;    // measured diagonal spacing of the box's own top-left/bottom-right screws
 box_mount_offset =
     box_mount_diagonal / (2 * sqrt(2)); // per-axis offset of each screw from the box/lid center
 box_mount_screw_clearance = 3.6;  // clearance hole for the box's 3mm-shank cover screws

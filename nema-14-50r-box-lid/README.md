@@ -29,7 +29,7 @@ The defaults are set from this box's actual measurements:
 
 - **3.65 in (92.7 mm) square** internal box opening (measured, not a
   nominal industry size).
-- Cover screws spaced **135 mm** apart on the diagonal, positioned
+- Cover screws spaced **132 mm** apart on the diagonal, positioned
   **top-left and bottom-right** (measured).
 - Screw shank diameter **3 mm** (measured), with a 3.6 mm clearance hole
   and a 6.5 mm head-clearance counterbore.
