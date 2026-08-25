@@ -33,9 +33,8 @@ The defaults are set from this box's actual measurements:
   **top-left and bottom-right** (measured).
 - Screw shank diameter **3 mm** (measured), with a 3.6 mm clearance hole
   and a 6.5 mm head-clearance counterbore.
-- A NEMA 14-50R flush receptacle with a face/bezel around **66 mm** in
-  diameter clearance (not yet re-measured against this specific box —
-  double check before printing).
+- A NEMA 14-50R flush receptacle with a **55 mm** face/bezel clearance
+  diameter.
 
 If your box, screws, or receptacle differ from these measurements, adjust
 the parameters at the top of the `.scad` file (`box_face_width/height`,
@@ -57,8 +56,8 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
   running through printed knuckles (two stationary barrels on the lid, one
   center barrel on the flap) with 0.25 mm bore clearance and 0.6 mm swing
   clearance between the flap barrel and the lid barrels.
-- Gaskets: 2 mm thick TPU, printed flat, bonded to their mating ASA part
-  with adhesive (no press-fit channel).
+- Gaskets: 2 mm lid gasket and 2.4 mm flap seal in TPU, printed flat and
+  bonded to their mating ASA parts with adhesive (no press-fit channel).
 
 ## Hardware
 

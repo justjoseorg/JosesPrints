@@ -40,7 +40,7 @@ box_mount_counterbore_depth = 3;
 // ===================== Receptacle clearance =====================
 // Round clearance for the receptacle's face/bezel only; the device
 // itself stays mounted to the existing box, not to this lid.
-receptacle_clearance_diameter = 66;
+receptacle_clearance_diameter = 55;
 
 // ===================== Lid shroud =====================
 lid_margin = 13;                               // lid overlap beyond the box face, each side
