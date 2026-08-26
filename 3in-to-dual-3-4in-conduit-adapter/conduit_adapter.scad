@@ -33,9 +33,15 @@ pipe34_od = 26.67; // 1.050 in
 socket_clearance = 0.35;
 // Wall thickness of the printed shell around each socket.
 wall = 3.2;
-// Minimum wall thickness of the flat cap face (between the 3" socket
-// bottom and the base of the 3/4" sockets), measured along the pipe axis.
-cap_face_thickness = 5.0;
+// Total thickness of the face plate between the 3" socket bottom and the
+// base of the 3/4" sockets, measured along the pipe axis. This splits into
+// a solid top deck (deck_thickness) plus an internal manifold gap below it
+// that lets wire route from the 3" bore into either 3/4" bore.
+cap_face_thickness = 9.0;
+// Solid deck thickness left at the very top of the face plate (the flat
+// area around the two bosses), above the internal manifold chamber. Must
+// be less than cap_face_thickness. Keeps the top from being wide open.
+deck_thickness = wall;
 // How far the 3" pipe end inserts into the cap (engagement depth).
 engage_depth_3in = 45; // ~1.8 in, comfortably above code minimum for a slip cap
 // How far each 3/4" pipe end inserts into its socket (engagement depth).
@@ -68,6 +74,9 @@ port_offset = port_spacing / 2;
 // 3" cap's outer shell footprint without overlapping it.
 assert(port_spacing + socket34_od <= socket3_od,
     "port_spacing/port sizes too large for the 3in cap footprint - reduce port_spacing or wall");
+// Sanity check: there must be room for a manifold gap below the solid deck.
+assert(cap_face_thickness > deck_thickness,
+    "cap_face_thickness must be greater than deck_thickness to leave room for the internal manifold");
 
 module adapter()
 {
@@ -92,20 +101,22 @@ module adapter()
         translate([0, 0, -1])
             cylinder(h = engage_depth_3in + eps + 1, d = socket3_id);
 
-        // Manifold cavity above the 3" socket: a shared open chamber under
-        // the face plate that both 3/4" sockets open into, so wire can pass
-        // from the 3" pipe into either 3/4" run. Kept clear of the 3"
-        // socket's own cavity by cap_face_thickness of solid face plate.
-        // Overlaps both the 3" cavity below and the 3/4" cavities above.
+        // Manifold chamber inside the face plate: a shared open cavity that
+        // both 3/4" sockets tunnel down into, so wire can pass from the 3"
+        // pipe into either 3/4" run. Its ceiling stops deck_thickness below
+        // the top face, leaving a solid deck there (punctured only by the
+        // two 3/4" bores themselves) instead of leaving the top wide open.
+        manifold_id = socket3_id - 2 * wall;
         translate([0, 0, cap_top_z - eps])
-            cylinder(h = cap_face_thickness + 2 * eps, d = socket3_id - 2 * wall * 0.6);
+            cylinder(h = cap_face_thickness - deck_thickness + 2 * eps, d = manifold_id);
 
-        // Two 3/4" pipe socket cavities (open at the top), each with a
-        // flared lead-in chamfer right at the opening to ease insertion.
+        // Two 3/4" pipe socket cavities (open at the top), tunneling down
+        // through the solid deck into the manifold chamber below, each with
+        // a flared lead-in chamfer right at the opening to ease insertion.
         for (dx = [-port_offset, port_offset])
         {
-            translate([dx, 0, face_top_z - eps])
-                cylinder(h = engage_depth_34in + eps + 1, d = socket34_id);
+            translate([dx, 0, face_top_z - deck_thickness - eps])
+                cylinder(h = engage_depth_34in + deck_thickness + eps + 1, d = socket34_id);
             translate([dx, 0, boss_top_z - lead_in_chamfer])
                 cylinder(h = lead_in_chamfer + eps, d1 = socket34_id, d2 = socket34_id + 2 * lead_in_chamfer);
         }
