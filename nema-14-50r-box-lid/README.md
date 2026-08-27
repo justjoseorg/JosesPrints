@@ -20,7 +20,7 @@ when the receptacle isn't in use.
 | `lid.stl` | ASA | Shroud + back plate + 2 stationary hinge barrels, bolts to the box |
 | `flap.stl` | ASA | Hinged flap leaf + its own hinge barrel, pinned to the lid |
 | `lid_gasket.stl` | TPU | Flat gasket between the lid's back plate and the box face |
-| `flap_seal.stl` | TPU | 2.4 mm ring gasket bonded to the flap; compresses 0.4 mm against the lid's flat front rim |
+| `flap_seal.stl` | TPU | 2.4 mm U-shaped gasket bonded to the flap; compresses 0.4 mm against the lid's flat front rim |
 | `preview.png` | — | Rendered assembled preview (flap open) |
 
 ## Important: verify your own hardware first
@@ -49,15 +49,17 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
 - Lid overall: 118.7 x 118.7 mm, 42 mm forward projection from the box face
   (room for the hinge, the closed flap, and a cord bend at the bottom).
 - Wall thickness: 3.2 mm. Back plate (against the box face): 5 mm.
-- Flap: 126.7 x 106.7 mm leaf, 4 mm thick, overlapping the lid on the sides
-  and bottom by 4 mm each to shed water; kept clear of the lid's top
-  edge/hinge zone.
+- Flap: 118.7 x 118.7 mm overall, 4 mm thick, matching the lid's outside
+  face when closed. Two localized top-edge reliefs clear the stationary
+  hinge supports while the rest of the perimeter remains aligned.
 - Hinge: sized for a raw **1.75 mm** 3D-printer filament strand as the pin,
   running through printed knuckles (two stationary barrels on the lid, one
-  center barrel on the flap) with 0.25 mm bore clearance and 0.6 mm swing
-  clearance between the flap barrel and the lid barrels.
-- Gaskets: 2 mm lid gasket and 2.4 mm flap seal in TPU, printed flat and
-  bonded to their mating ASA parts with adhesive (no press-fit channel).
+  center barrel on the flap) with 0.4 mm axial clearance at each knuckle
+  joint, 0.25 mm bore clearance, and 0.6 mm swing clearance.
+- Gaskets: 2 mm lid gasket and 2.4 mm U-shaped flap seal in TPU, printed
+  flat and bonded to their mating ASA parts with adhesive (no press-fit
+  channel). The flap seal covers both sides and the bottom; its top strip
+  is relieved around the hinge.
 
 ## Hardware
 

@@ -55,12 +55,12 @@ receptacle_center_x_lid = lid_width / 2;
 receptacle_center_z_lid = lid_height / 2;
 
 // ===================== Flap =====================
-// The flap overlaps the lid on the sides and bottom to shed water, but
-// stays clear of the top edge so it can swing without hitting the
-// stationary hinge barrels mounted above the lid's own top edge.
-flap_side_overlap = 4;   // per side
-flap_bottom_overlap = 4;
-flap_top_clearance = 16;  // gap kept below the hinge barrels when closed
+// The flap matches the lid's outside face so all four edges align when
+// closed. Hinge clearance is provided by the axis offset, not by making
+// the leaf shorter or wider than the lid.
+flap_side_overlap = 0;
+flap_bottom_overlap = 0;
+flap_top_clearance = 0;
 flap_width = lid_width + 2 * flap_side_overlap;
 flap_height = lid_height - flap_top_clearance + flap_bottom_overlap;
 flap_x = -flap_side_overlap;
@@ -83,8 +83,13 @@ hinge_axis_y = lid_depth + 6;
 hinge_anchor_height = 10;
 hinge_left_start = 10;
 hinge_outer_length = 20;
-hinge_center_start = 38; // in the flap's own local X coordinate
-hinge_center_length = 48;
+hinge_axial_clearance = 0.4; // one nozzle width at each knuckle joint
+hinge_center_start =
+    hinge_left_start + hinge_outer_length + hinge_axial_clearance;
+hinge_center_length =
+    lid_width
+    - 2 * (hinge_left_start + hinge_outer_length + hinge_axial_clearance);
+flap_hinge_relief_depth = hinge_anchor_height + hinge_rotation_clearance;
 
 flap_leaf_y_start = lid_depth + 2;
 
@@ -101,7 +106,13 @@ assert(
     "The back plate must be thinner than the overall lid depth."
 );
 assert(
-    hinge_left_start + hinge_outer_length + 2 <= hinge_center_start + flap_x,
+    hinge_left_start + hinge_outer_length + hinge_axial_clearance
+        <= hinge_center_start + flap_x + 0.001,
+    "Hinge barrels overlap; adjust hinge_left_start/outer_length/center_start."
+);
+assert(
+    hinge_center_start + flap_x + hinge_center_length + hinge_axial_clearance
+        <= lid_width - hinge_left_start - hinge_outer_length + 0.001,
     "Hinge barrels overlap; adjust hinge_left_start/outer_length/center_start."
 );
 
@@ -323,9 +334,33 @@ module lid_gasket() {
     }
 }
 
+module flap_hinge_clearance_cutouts(y_start, depth) {
+    for (start = [
+        hinge_left_start,
+        lid_width - hinge_left_start - hinge_outer_length
+    ])
+        translate([
+            start - hinge_axial_clearance,
+            y_start,
+            flap_height - flap_hinge_relief_depth
+        ])
+            cube([
+                hinge_outer_length + 2 * hinge_axial_clearance,
+                depth,
+                flap_hinge_relief_depth + 0.1
+            ]);
+}
+
 module flap() {
-    translate([0, flap_leaf_y_start, -flap_bottom_overlap])
-        front_prism(flap_width, flap_height, flap_thickness, 8);
+    difference() {
+        translate([0, flap_leaf_y_start, -flap_bottom_overlap])
+            front_prism(flap_width, flap_height, flap_thickness, 8);
+
+        flap_hinge_clearance_cutouts(
+            flap_leaf_y_start - 0.1,
+            flap_thickness + 0.2
+        );
+    }
 }
 
 module flap_assembly() {
@@ -338,19 +373,29 @@ module flap_assembly() {
 // A flat ring matching the flap leaf's own footprint, bonded to the
 // flap's back face. It is 0.4 mm thicker than the nominal closed gap,
 // giving controlled compression against the lid's flat front rim without
-// a raised hard curb that could hold the flap open. It intentionally does
-// not extend into the top clearance strip reserved for the hinge barrels;
-// that strip is shielded by the ASA-to-ASA hinge fit itself rather than by
-// a gasket.
+// a raised hard curb that could hold the flap open.
 module flap_seal() {
-    translate([0, flap_leaf_y_start - flap_seal_thickness, -flap_bottom_overlap])
-        ring_front_prism(
-            flap_width,
-            flap_height,
-            flap_seal_thickness,
-            8,
-            flap_seal_ring_width
-        );
+    difference() {
+        translate([0, flap_leaf_y_start - flap_seal_thickness, -flap_bottom_overlap])
+            ring_front_prism(
+                flap_width,
+                flap_height,
+                flap_seal_thickness,
+                8,
+                flap_seal_ring_width
+            );
+
+        translate([
+            -0.1,
+            flap_leaf_y_start - flap_seal_thickness - 0.1,
+            flap_height - flap_hinge_relief_depth
+        ])
+            cube([
+                flap_width + 0.2,
+                flap_seal_thickness + 0.2,
+                flap_hinge_relief_depth + 0.1
+            ]);
+    }
 }
 
 module receptacle_preview() {
