@@ -52,11 +52,11 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
 - Flap: uninterrupted 118.7 x 118.7 mm leaf, 4 mm thick, matching the
   lid's outside face on all four edges when closed.
 - Hinge: sized for a raw **1.75 mm** 3D-printer filament strand as the pin,
-  running through printed knuckles (two stationary barrels on the lid, one
-  center barrel on the flap) with 0.4 mm axial clearance at each knuckle
+  running through 8 mm printed knuckles (two stationary barrels on the
+  lid, one center barrel on the flap) with 0.4 mm axial clearance at each
   joint, 0.25 mm bore clearance, and 0.6 mm swing clearance.
 - Closed alignment: all three hinge bores share the same axis at Y=48.0 mm
-  from the box face and Z=124.3 mm from the lid bottom. With that axis
+  from the box face and Z=123.3 mm from the lid bottom. With that axis
   aligned, the rigid lid-to-flap gap is 2.0 mm; only the 2.4 mm TPU seal
   enters it, compressing by 0.4 mm.
 - Gaskets: 2 mm lid gasket and 2.4 mm full-perimeter flap seal in TPU,
@@ -82,7 +82,8 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
   flap's envelope. The shroud walls, hinge barrels, and supports rise
   upward with no large overhangs; slicer auto-supports can be left off.
 - **`flap`**: print flat, back face down (as oriented by
-  `flap_for_printing()`); no supports needed.
+  `flap_for_printing()`). The full back face and the 8 mm hinge barrel
+  tangent are exactly coplanar on the bed; no supports are needed.
 - **`lid_gasket` / `flap_seal`** (TPU): print flat, no supports. Use a slower
   print speed appropriate for flexible filament.
 - Nozzle: designed for **0.4 mm**. All wall/rib features are multiples of

@@ -80,10 +80,10 @@ gasket_border = 12;
 hinge_pin_diameter = 1.75;
 hinge_clearance = 0.25;
 hinge_bore_diameter = hinge_pin_diameter + hinge_clearance;
-hinge_outer_diameter = 10;
+hinge_outer_diameter = 8;
 hinge_rotation_clearance = 0.6;
 hinge_axis_z = lid_height + hinge_outer_diameter / 2 + hinge_rotation_clearance;
-hinge_axis_y = lid_depth + 6;
+hinge_axis_y = flap_leaf_y_start + hinge_outer_diameter / 2;
 hinge_anchor_height = 10;
 hinge_left_start = 10;
 hinge_outer_length = 20;
@@ -427,9 +427,9 @@ module flap_for_printing() {
     translate([
         0,
         hinge_axis_z + hinge_outer_diameter / 2,
-        flap_leaf_y_start + flap_thickness
+        -flap_leaf_y_start
     ])
-        rotate([-90, 0, 0])
+        rotate([90, 0, 0])
             flap_assembly();
 }
 
@@ -440,7 +440,11 @@ module lid_gasket_for_printing() {
 }
 
 module flap_seal_for_printing() {
-    translate([0, lid_height, 0])
+    translate([
+        0,
+        lid_height,
+        flap_seal_thickness - flap_leaf_y_start
+    ])
         rotate([90, 0, 0])
             flap_seal();
 }
