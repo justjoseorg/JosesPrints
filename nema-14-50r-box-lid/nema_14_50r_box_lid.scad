@@ -17,13 +17,14 @@
   YOUR OWN BOX, SCREW SPACING/POSITION, AND RECEPTACLE BEFORE PRINTING
   if yours differs.
 
-  Printable part values: "lid", "flap", "lid_gasket", "flap_seal",
-  "hinge_clearance_check", "layout", "assembled".
+  Printable part values: "lid", "flap", "lid_gasket", "flap_seal".
+  Diagnostic/view values: "hinge_clearance_check",
+  "seal_compression_check", "layout", "assembled".
 */
 
 $fn = 64;
 
-part = "assembled"; // lid, flap, lid_gasket, flap_seal, hinge_clearance_check, layout, assembled
+part = "assembled"; // lid, flap, lid_gasket, flap_seal, hinge_clearance_check, seal_compression_check, layout, assembled
 preview_flap_angle = 100;
 hinge_test_angle = 90;
 
@@ -67,6 +68,9 @@ flap_x = -flap_side_overlap;
 flap_thickness = 4;
 flap_seal_thickness = 2.4;
 flap_seal_ring_width = 8;
+flap_seal_compression = 0.4;
+flap_closed_gap = flap_seal_thickness - flap_seal_compression;
+flap_leaf_y_start = lid_depth + flap_closed_gap;
 
 // ===================== Gaskets =====================
 gasket_thickness = 2;
@@ -89,9 +93,6 @@ hinge_center_start =
 hinge_center_length =
     lid_width
     - 2 * (hinge_left_start + hinge_outer_length + hinge_axial_clearance);
-flap_hinge_relief_depth = hinge_anchor_height + hinge_rotation_clearance;
-
-flap_leaf_y_start = lid_depth + 2;
 
 assert(
     receptacle_clearance_diameter < min(lid_width, lid_height) - 2 * lid_margin,
@@ -186,6 +187,7 @@ module hinge_anchor(
                 hinge_anchor_height
             ]);
     }
+
 }
 
 module reinforced_hinge_barrel(
@@ -203,20 +205,61 @@ module reinforced_hinge_barrel(
     }
 }
 
-// The stationary hinge anchors sit at Y = lid_depth-hinge_anchor_height..
-// lid_depth (near the front rim) but their X span (away from the side
-// walls) has no shroud wall material underneath, in the depth
-// direction, back to the flange. Printed flat-on-the-back-plate, that
-// left a ~27 mm unsupported bridge under each anchor. This solid rib
-// fills that gap, in the print's vertical (build) direction, from the
-// back flange up to the anchor's underside, so nothing overhangs.
-module hinge_support_rib(start, length) {
-    translate([start, flange_thickness, lid_height - hinge_anchor_height])
-        cube([
-            length,
-            (lid_depth - hinge_anchor_height) - flange_thickness,
-            hinge_anchor_height
-        ]);
+module stationary_hinge_barrel(start, length) {
+    support_z_min = lid_height - hinge_anchor_height;
+    support_z_max = hinge_axis_z + hinge_outer_diameter / 2;
+    support_front_y = lid_depth;
+    support_slice = 0.4;
+
+    difference() {
+        union() {
+            translate([start, hinge_axis_y, hinge_axis_z])
+                cylinder_x(length, hinge_outer_diameter);
+
+            // The support rises gradually from the back plate but never
+            // passes the lid's front rim inside the TPU seal envelope.
+            hull() {
+                translate([
+                    start,
+                    flange_thickness - support_slice / 2,
+                    support_z_min
+                ])
+                    cube([
+                        length,
+                        support_slice,
+                        hinge_anchor_height
+                    ]);
+
+                translate([
+                    start,
+                    support_front_y - support_slice,
+                    support_z_min
+                ])
+                    cube([
+                        length,
+                        support_slice,
+                        support_z_max - support_z_min
+                    ]);
+            }
+
+            // Bridge from the rim to the barrel above the flap. Its
+            // underside stays exactly one rotation-clearance gap above
+            // the axis-aligned flap and full-perimeter TPU seal.
+            translate([
+                start,
+                lid_depth,
+                lid_height + hinge_rotation_clearance
+            ])
+                cube([
+                    length,
+                    hinge_axis_y - lid_depth,
+                    hinge_outer_diameter
+                ]);
+        }
+
+        translate([start - 0.1, hinge_axis_y, hinge_axis_z])
+            cylinder_x(length + 0.2, hinge_bore_diameter);
+    }
 }
 
 module lid_hinge_barrels() {
@@ -224,15 +267,10 @@ module lid_hinge_barrels() {
         hinge_left_start,
         lid_width - hinge_left_start - hinge_outer_length
     ]) {
-        reinforced_hinge_barrel(
+        stationary_hinge_barrel(
             start,
-            hinge_outer_length,
-            lid_depth - hinge_anchor_height,
-            lid_depth,
-            lid_height
+            hinge_outer_length
         );
-
-        hinge_support_rib(start, hinge_outer_length);
     }
 }
 
@@ -334,33 +372,9 @@ module lid_gasket() {
     }
 }
 
-module flap_hinge_clearance_cutouts(y_start, depth) {
-    for (start = [
-        hinge_left_start,
-        lid_width - hinge_left_start - hinge_outer_length
-    ])
-        translate([
-            start - hinge_axial_clearance,
-            y_start,
-            flap_height - flap_hinge_relief_depth
-        ])
-            cube([
-                hinge_outer_length + 2 * hinge_axial_clearance,
-                depth,
-                flap_hinge_relief_depth + 0.1
-            ]);
-}
-
 module flap() {
-    difference() {
-        translate([0, flap_leaf_y_start, -flap_bottom_overlap])
-            front_prism(flap_width, flap_height, flap_thickness, 8);
-
-        flap_hinge_clearance_cutouts(
-            flap_leaf_y_start - 0.1,
-            flap_thickness + 0.2
-        );
-    }
+    translate([0, flap_leaf_y_start, -flap_bottom_overlap])
+        front_prism(flap_width, flap_height, flap_thickness, 8);
 }
 
 module flap_assembly() {
@@ -375,27 +389,14 @@ module flap_assembly() {
 // giving controlled compression against the lid's flat front rim without
 // a raised hard curb that could hold the flap open.
 module flap_seal() {
-    difference() {
-        translate([0, flap_leaf_y_start - flap_seal_thickness, -flap_bottom_overlap])
-            ring_front_prism(
-                flap_width,
-                flap_height,
-                flap_seal_thickness,
-                8,
-                flap_seal_ring_width
-            );
-
-        translate([
-            -0.1,
-            flap_leaf_y_start - flap_seal_thickness - 0.1,
-            flap_height - flap_hinge_relief_depth
-        ])
-            cube([
-                flap_width + 0.2,
-                flap_seal_thickness + 0.2,
-                flap_hinge_relief_depth + 0.1
-            ]);
-    }
+    translate([0, flap_leaf_y_start - flap_seal_thickness, -flap_bottom_overlap])
+        ring_front_prism(
+            flap_width,
+            flap_height,
+            flap_seal_thickness,
+            8,
+            flap_seal_ring_width
+        );
 }
 
 module receptacle_preview() {
@@ -471,6 +472,13 @@ module hinge_clearance_check(angle) {
     }
 }
 
+module seal_compression_check() {
+    intersection() {
+        lid();
+        positioned_flap_seal();
+    }
+}
+
 module assembled() {
     color([0.76, 0.38, 0.08])
         lid();
@@ -513,6 +521,8 @@ if (part == "lid") {
     flap_seal_for_printing();
 } else if (part == "hinge_clearance_check") {
     hinge_clearance_check(hinge_test_angle);
+} else if (part == "seal_compression_check") {
+    seal_compression_check();
 } else if (part == "layout") {
     lid_for_printing();
 

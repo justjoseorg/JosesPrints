@@ -20,7 +20,7 @@ when the receptacle isn't in use.
 | `lid.stl` | ASA | Shroud + back plate + 2 stationary hinge barrels, bolts to the box |
 | `flap.stl` | ASA | Hinged flap leaf + its own hinge barrel, pinned to the lid |
 | `lid_gasket.stl` | TPU | Flat gasket between the lid's back plate and the box face |
-| `flap_seal.stl` | TPU | 2.4 mm U-shaped gasket bonded to the flap; compresses 0.4 mm against the lid's flat front rim |
+| `flap_seal.stl` | TPU | 2.4 mm full-perimeter gasket bonded to the flap; compresses 0.4 mm against the lid's flat front rim |
 | `preview.png` | — | Rendered assembled preview (flap open) |
 
 ## Important: verify your own hardware first
@@ -49,17 +49,20 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
 - Lid overall: 118.7 x 118.7 mm, 42 mm forward projection from the box face
   (room for the hinge, the closed flap, and a cord bend at the bottom).
 - Wall thickness: 3.2 mm. Back plate (against the box face): 5 mm.
-- Flap: 118.7 x 118.7 mm overall, 4 mm thick, matching the lid's outside
-  face when closed. Two localized top-edge reliefs clear the stationary
-  hinge supports while the rest of the perimeter remains aligned.
+- Flap: uninterrupted 118.7 x 118.7 mm leaf, 4 mm thick, matching the
+  lid's outside face on all four edges when closed.
 - Hinge: sized for a raw **1.75 mm** 3D-printer filament strand as the pin,
   running through printed knuckles (two stationary barrels on the lid, one
   center barrel on the flap) with 0.4 mm axial clearance at each knuckle
   joint, 0.25 mm bore clearance, and 0.6 mm swing clearance.
-- Gaskets: 2 mm lid gasket and 2.4 mm U-shaped flap seal in TPU, printed
-  flat and bonded to their mating ASA parts with adhesive (no press-fit
-  channel). The flap seal covers both sides and the bottom; its top strip
-  is relieved around the hinge.
+- Closed alignment: all three hinge bores share the same axis at Y=48.0 mm
+  from the box face and Z=124.3 mm from the lid bottom. With that axis
+  aligned, the rigid lid-to-flap gap is 2.0 mm; only the 2.4 mm TPU seal
+  enters it, compressing by 0.4 mm.
+- Gaskets: 2 mm lid gasket and 2.4 mm full-perimeter flap seal in TPU,
+  printed flat and bonded to their mating ASA parts with adhesive (no
+  press-fit channel). The closed rigid gap is 2 mm, producing 0.4 mm of
+  TPU compression.
 
 ## Hardware
 
@@ -74,10 +77,10 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
 
 - **`lid`**: print with the back plate face-down on the bed (as oriented by
   the `lid_for_printing()` module used by the `lid` part). The stationary
-  hinge anchors are tied down to the back plate with a built-in solid
-  support rib (`hinge_support_rib()`), so they no longer cantilever over an
-  open gap. The shroud walls, hinge barrels, and ribs rise upward with no
-  large overhangs; slicer auto-supports can be left off.
+  hinge barrels are tied to the back plate by built-in sloped supports
+  that rise into the rear of each barrel without entering the closed
+  flap's envelope. The shroud walls, hinge barrels, and supports rise
+  upward with no large overhangs; slicer auto-supports can be left off.
 - **`flap`**: print flat, back face down (as oriented by
   `flap_for_printing()`); no supports needed.
 - **`lid_gasket` / `flap_seal`** (TPU): print flat, no supports. Use a slower
@@ -105,15 +108,15 @@ to `[[1, 1], [-1, -1]]` for top-right/bottom-left instead.
   itself is already properly mounted, grounded, and code-compliant for
   outdoor use. This design does not add any weatherproofing to the box
   itself, only to the opening in front of the receptacle.
-- The top ~16 mm strip of the opening nearest the hinge is not covered by
-  the compressible TPU seal (only the ASA-to-ASA hinge fit shields that
-  area) — a common trade-off for simple single-hinge-pin outdoor covers.
-  For extra protection in heavy rain, mount the box with the hinge at the
-  top facing away from prevailing wind-driven rain if possible.
+- The TPU seal now runs around the complete flap perimeter, including the
+  top edge below the hinge. For extra protection in heavy rain, mount the
+  box with the hinge at the top facing away from prevailing wind-driven
+  rain if possible.
 - All four parts were verified to render as single, watertight, fully
   connected solids, and the hinge sweep (`hinge_clearance_check`, 0-120°)
   was verified to be fully collision-free between the flap and the lid at
-  every tested angle.
+  every tested angle. `seal_compression_check` verifies one continuous
+  0.4 mm-deep contact around the full perimeter.
 - **This is not a substitute for a UL/NEMA-listed "in-use" weatherproof
   cover where required by local code.** Verify your local electrical code
   requirements for outdoor 240 V/50 A receptacles before relying on this
