@@ -4,6 +4,8 @@ Parametric OpenSCAD models and ready-to-print STL files.
 
 | Print | Description |
 | --- | --- |
+| [Bluey head lantern - V1](bluey-head-lantern/) | Final rounded, plush-like head sculpt; smooth solid master with detailed ears and face |
+| [Bluey circular head lantern - V2](bluey-circular-head-lantern/) | Circular base and LEGO-like cylindrical head with Bluey's sculpted ears and facial details |
 | [Car coin holder](car-coin-holder/) | Two-piece divided coin container for a 70 mm car cup holder |
 | [Raspberry Pi 4 USB-C case](rpi4-usb-c-case/) | Compact snap-fit enclosure exposing only the USB-C power port |
 | [Round twist-lock ceiling mount](round-twist-lock-ceiling-mount/) | Cable mount with two ramped M4 twist-lock slots |
@@ -13,6 +15,7 @@ Parametric OpenSCAD models and ready-to-print STL files.
 | [Modular shoe hanger](shoe-hanger/) | One hanger adapter plus three identical pair-holding levels for six shoes |
 | [NEMA 14-50R outdoor enclosure](nema-14-50r-outdoor-enclosure/) | Standalone gasketed ASA receptacle enclosure (no existing box) with a rain flap and 3/4-inch conduit entry |
 | [NEMA 14-50R box lid](nema-14-50r-box-lid/) | Weatherproof lid-only cover that bolts onto an existing square EMT box's receptacle opening, with a filament-hinged flap |
+| [NEMA 14-50R rain hat](nema-14-50r-rain-hat/) | Removable screw-on canopy that clamps onto an already-installed NEMA 14-50R box lid in place of its flap, seating and sealing flush to the wall |
 | [3-inch to dual 3/4-inch conduit adapter](3in-to-dual-3-4in-conduit-adapter/) | One-piece cap that slips over 3-inch PVC conduit and splits into two 3/4-inch conduit sockets |
 | [2-inch to four 3/4-inch conduit adapter](2in-to-quad-3-4in-conduit-adapter/) | Female 2-inch manifold with four female 3/4-inch conduit sockets in a centered 2x2 array |
 | [1-1/2-inch to dual 3/4-inch conduit adapter](1-1-2-to-dual-3-4in-conduit-adapter/) | Female 1-1/2-inch inlet feeding two female 3/4-inch conduit exits |

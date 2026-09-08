@@ -23,6 +23,15 @@ when the receptacle isn't in use.
 | `flap_seal.stl` | TPU | 2.4 mm full-perimeter gasket bonded to the flap; compresses 0.4 mm against the lid's flat front rim |
 | `preview.png` | — | Rendered assembled preview (flap open) |
 
+## Retrofit accessory
+
+If the lid is already installed and you would rather have an open canopy than
+a hinged flap, [NEMA 14-50R rain hat](../nema-14-50r-rain-hat/) is a
+strictly additive, removable screw-on cover that clamps to the outside of
+this lid's shroud, seats flush against the wall, and can be sealed there. It
+requires no change to the lid — only the flap, its filament pin, and its TPU
+seal are taken off.
+
 ## Important: verify your own hardware first
 
 The defaults are set from this box's actual measurements:
