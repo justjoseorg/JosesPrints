@@ -5,6 +5,7 @@ Parametric OpenSCAD models and ready-to-print STL files.
 | Print | Description |
 | --- | --- |
 | [Bluey head lantern - three variants](bluey-head-lantern/) | V1 rounded head, V2 circular-base head, and V3 rounded no-smile head; sources, STLs, and previews |
+| [Bingo head lantern](bingo-head-lantern/) | Rounded single-piece Bingo head based on Bluey V3, with shorter ears, orange markings, and a cream muzzle |
 | [Car coin holder](car-coin-holder/) | Two-piece divided coin container for a 70 mm car cup holder |
 | [Raspberry Pi 4 USB-C case](rpi4-usb-c-case/) | Compact snap-fit enclosure exposing only the USB-C power port |
 | [Round twist-lock ceiling mount](round-twist-lock-ceiling-mount/) | Cable mount with two ramped M4 twist-lock slots |
