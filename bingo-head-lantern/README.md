@@ -34,6 +34,11 @@ This is a stylized sculpt derived from the existing Bluey model, not an exact
 on-screen scale match. The STL contains no colors. Colors in OpenSCAD and the
 color guide are painting suggestions, not separate multi-material parts.
 
+The current STL uses 192 segments around curves instead of the original 96
+to reduce visible faceting on the cheeks, eyes, muzzle, and brows. The mesh
+is regenerated from the curved CAD surfaces rather than globally smoothing
+the STL, preserving the shallow facial markings and flat print base.
+
 ## Printing
 
 Print with the **flat underside on the bed and ears pointing upward**, as
@@ -94,7 +99,7 @@ Dimensions are in millimeters and grouped near the top of the source.
 | `brow_z`, `brow_root_z` | `109`, `99` | Brow top volume and blended root heights |
 | `detail_relief` | `0.2` | Shallow raised marking steps |
 | `coat_color`, `patch_color`, `cream_color`, `nose_color` | Orange, dark orange, cream, brown | Preview palette; does not color the STL |
-| `$fn` | `96` | Curved-surface resolution |
+| `$fn` | `192` | Fine curved-surface resolution; use `96` for a faster draft |
 
 `head`, `assembled`, and `layout` show the same complete, single-piece model.
 `section` removes the back half for inspection and is not a printable part or

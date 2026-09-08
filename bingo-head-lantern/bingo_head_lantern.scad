@@ -4,7 +4,7 @@
   Front is -Y, flat base is Z=0. Hollow printing requires crown supports.
 */
 
-$fn = 96;
+$fn = 192;
 part = "assembled"; // [head,assembled,layout,section]
 
 /* [Rounded head] */
