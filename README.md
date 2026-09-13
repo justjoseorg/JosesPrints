@@ -10,6 +10,7 @@ Parametric OpenSCAD models and ready-to-print STL files.
 | [Raspberry Pi 4 USB-C case](rpi4-usb-c-case/) | Compact snap-fit enclosure exposing only the USB-C power port |
 | [Round twist-lock ceiling mount](round-twist-lock-ceiling-mount/) | Cable mount with two ramped M4 twist-lock slots |
 | [Eufy C220 inverted wall bracket](eufy-c220-inverted-wall-bracket/) | Reinforced L-bracket with 37 mm spaced screw holes for upside-down mounting |
+| [Gothic shelf](gothic-shelf/) | 144.4 x 285 mm two-piece gothic shelf, scaled to 95%, with a sliding dovetail rail and integral locking catch |
 | [3/4-inch PVC conduit cutting jig](3-4-pvc-conduit-cutting-jig/) | One-piece snap-on oscillating-tool guide for square conduit cuts |
 | [Dewalt hex bit holder](dewalt-hex-bit-holder/) | Vertical, snug-fit block holding 24 standard hex-shank bits |
 | [DCF850 impact bit holder](dcf850-impact-bit-holder/) | Screw-mounted holder for 4 impact bits, attaches to the tool's belt-clip screw hole |
