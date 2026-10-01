@@ -1,0 +1,42 @@
+{
+  "slicer": "PrusaSlicer-2.9.2+UNKNOWN based on Slic3r (with GUI support)",
+  "baseline_commit": "dfff88db3b71490f0810f368c6996e7699382bd9",
+  "cli_settings": [
+    "--export-gcode",
+    "--layer-height",
+    "0.2",
+    "--first-layer-height",
+    "0.2",
+    "--nozzle-diameter",
+    "0.4",
+    "--filament-diameter",
+    "1.75",
+    "--perimeters",
+    "4",
+    "--fill-density",
+    "20%",
+    "--support-material",
+    "--support-material-threshold",
+    "45",
+    "--dont-support-bridges"
+  ],
+  "physical_print_verified": false,
+  "note": "Same generic automatic-support diagnostic. Not a tuned printer profile or physical print test.",
+  "parts": {
+    "previous_cradle": {
+      "stl_sha256": "ed192a3783f1e6af58ef5a7b244e7202f0f794f5269f50d05b21b751b395af90",
+      "support_filament_mm": 12885.149639994954,
+      "support_extrusion_moves": 63649,
+      "diagnostic_gcode_path": "/tmp/odin-slicing-3zc5y99z/previous_cradle.gcode",
+      "exit_code": 0
+    },
+    "redesigned_cradle": {
+      "stl_sha256": "53e0f3835348219d39deb1e033ba545b03a6a443807a1688519d8ca2c3541aff",
+      "support_filament_mm": 0.0,
+      "support_extrusion_moves": 0,
+      "diagnostic_gcode_path": "/tmp/odin-slicing-3zc5y99z/redesigned_cradle.gcode",
+      "exit_code": 0
+    }
+  },
+  "support_filament_reduction_percent": 100.0
+}

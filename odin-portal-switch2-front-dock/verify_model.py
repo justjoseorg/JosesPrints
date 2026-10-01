@@ -42,8 +42,9 @@ def render(job):
     print(part,'PASS',('empty intersection' if empty else out.name),flush=True)
     return part,{'exit_code':p.returncode,'expected_empty_intersection':empty,'log':p.stderr,'defines':extra}
 jobs=[('adapter',ROOT/'adapter.stl',False,[]),('cradle',ROOT/'cradle.stl',False,[]),
-      ('assembled',ROOT/'preview.png',True,[]),('layout',ROOT/'print-orientation.png',True,[])]
-for p in ['dock_usb_entry_check','adapter_dock_check','adapter_wire_check','coil_check','coil_dock_check','cradle_device_check','cradle_wire_check','cradle_table_check','parts_collision_check','preview_device_check']:
+      ('assembled',ROOT/'preview.png',True,[]),('layout',ROOT/'print-orientation.png',True,[]),
+      ('cradle',ROOT/'cradle-preview.png',True,[])]
+for p in ['dock_usb_entry_check','adapter_dock_check','adapter_wire_check','coil_check','coil_dock_check','coil_inside_body_check','loaded_envelope_check','cradle_device_check','cradle_wire_check','cradle_table_check','parts_collision_check','preview_device_check']:
     jobs.append((p,TMP/(p+'.stl'),False,[]))
 # Explicit decoupling test: changing dock preview height must not alter either print.
 alt_height=value('seating_stop_to_table')+10
@@ -78,15 +79,15 @@ for h in [5,15,35,49]:
     sections.append({'height_mm':h,'bounds_mm':b.tolist()})
 assert abs(cradle.bounds[0,2]-tabletop)<.001
 r=value('winder_core_radius')+value('coil_test_diameter')/2+.2
-wx=value('winder_x');wy=value('winder_y');spacing=value('winder_spacing')
-wtop=value('insertion_height')+value('flange_height')-1+value('winder_deck_thickness')
+wx=value('winder_x');wy=value('storage_wire_y');spacing=value('winder_spacing')
+wtop=value('winder_center_z')
 wrap_perimeter=2*spacing+2*math.pi*r
-# One displayed coil, actual capacity check covers two sample loops.
+# One sample turn recessed in X/Z, including cable in the outer-envelope check.
 u=np.linspace(math.pi/2,3*math.pi/2,60)
-coil=[np.array([wx-spacing/2+r*math.cos(t),wy+r*math.sin(t),wtop+3.3]) for t in u]
-coil.append(np.array([wx+spacing/2,wy-r,wtop+3.3]))
+coil=[np.array([wx-spacing/2+r*math.cos(t),wy,wtop+r*math.sin(t)]) for t in u]
+coil.append(np.array([wx+spacing/2,wy,wtop-r]))
 u=np.linspace(-math.pi/2,math.pi/2,60)
-coil.extend(np.array([wx+spacing/2+r*math.cos(t),wy+r*math.sin(t),wtop+3.3]) for t in u)
+coil.extend(np.array([wx+spacing/2+r*math.cos(t),wy,wtop+r*math.sin(t)]) for t in u)
 coil.append(coil[0]);coil=np.array(coil)
 # Native device envelope transformed into the freely placed example cradle.
 def yz(y,z):return np.array([value('seat_y')+y*math.cos(a)+z*math.sin(a)+preview_y,
@@ -104,39 +105,33 @@ ax=axs[0]
 for y,w in [(-hd,hd-8),(8,hd-8)]:ax.add_patch(Rectangle((y,tabletop),w,value('dock_height'),facecolor='#aaaaaa',alpha=.22,edgecolor='#555555'))
 ax.add_patch(Polygon(corners,facecolor='#62b7be',alpha=.16,edgecolor='#267c87'))
 ax.axhline(tabletop,color='#333333',linewidth=1.5)
-ax.annotate('PART A: insert + built-in winder',xy=(-14,wtop+7),xytext=(20,109),arrowprops={'arrowstyle':'->'},fontsize=10)
+ax.annotate('PART A: flush recessed cable storage',xy=(wy,wtop),xytext=(20,109),arrowprops={'arrowstyle':'->'},fontsize=10)
 ax.annotate('PART B: independent Odin cradle\nNo matched-height requirement',xy=(-92,tabletop+32),xytext=(-146,88),arrowprops={'arrowstyle':'->'},fontsize=10)
 ax.set_xlim(-158,148);ax.set_ylim(tabletop-12,130)
 ax.set_xlabel('Front ← Y → rear / mm');ax.set_ylabel('Z / mm relative to insert');ax.set_title('Example placement — cable only between pieces')
 ax=axs[1]
 ax.add_patch(Rectangle((-value('dock_width')/2,-hd),value('dock_width'),value('dock_depth'),facecolor='#aaaaaa',alpha=.2,edgecolor='#666666'))
 ax.add_patch(Rectangle((-value('odin_width')/2,corners[:,0].min()),value('odin_width'),np.ptp(corners[:,0]),facecolor='#62b7be',alpha=.13,edgecolor='#267c87'))
-ax.annotate('Wind only surplus cable\nUnwind to adjust reach',xy=(wx,wy-r),xytext=(-123,25),arrowprops={'arrowstyle':'->'},fontsize=10)
+ax.annotate('Wind only surplus cable\nUnwind to adjust reach',xy=(wx,wy),xytext=(-123,25),arrowprops={'arrowstyle':'->'},fontsize=10)
 ax.annotate('Cradle can move freely\nwithin cable reach',xy=(0,center_y+preview_y),xytext=(30,-142),arrowprops={'arrowstyle':'->'},fontsize=10)
 ax.set_xlim(-145,145);ax.set_ylim(-151,40);ax.set_xlabel('X / mm');ax.set_ylabel('Y / mm');ax.set_title('Top view — no side arm or mechanical attachment')
 fig.suptitle('TWO PIECES | dock insert with cable winder + standalone TPU-friendly Odin cradle\nExample only: wind/unwind your existing cable to suit the actual placement; hardware envelopes are illustrative',fontsize=13)
 fig.tight_layout();fig.savefig(ROOT/'placement.png',dpi=155);plt.close(fig)
-# Winder detail: ghosted keeper outlines and actual sectional clearance.
-fig,axes=plt.subplots(1,2,figsize=(16,8));ax=axes[0]
-ax.add_collection(PolyCollection(adapter.triangles[:,:,[0,1]],facecolor='#4b7891',edgecolor='#35566b',linewidth=.08))
-for x in [wx-spacing/2,wx+spacing/2]:
-    ax.add_patch(Circle((x,wy),value('winder_flange_radius'),facecolor='#d9e4eb',alpha=.35,edgecolor='#24495e',linewidth=1.5))
-    ax.add_patch(Circle((x,wy),value('winder_core_radius'),facecolor='#f6f3e8',edgecolor='#24495e',linewidth=2))
-ax.plot(coil[:,0],coil[:,1],color='#e45324',linewidth=4)
-ax.annotate('Wrap around BOTH cores\nKeeper lips are ghosted to show cable',xy=(wx-spacing/2-r,wy),xytext=(6,-52),arrowprops={'arrowstyle':'->'},fontsize=10)
-ax.text(6,13,f'Core radius {value("winder_core_radius"):g} mm; gap {value("winder_gap"):g} mm',fontsize=10)
-ax.text(6,7,f'Example 6 mm cable: ~{wrap_perimeter:.1f} mm per complete turn',fontsize=9)
-ax.set_xlim(3,121);ax.set_ylim(-58,20);ax.set_aspect('equal');ax.grid(alpha=.15)
-ax.set_title('Top view — cores visible through ghosted keeper lips');ax.set_xlabel('X / mm');ax.set_ylabel('Y / mm')
-ax=axes[1];sec=adapter.section(plane_origin=[0,wy,0],plane_normal=[0,1,0]);assert sec is not None
-for line in sec.discrete:ax.plot(line[:,0],line[:,2],color='#24495e',linewidth=2)
-for x in [wx-spacing/2-r,wx+spacing/2+r]:
-    for z in [wtop+3.3,wtop+3.3+value('coil_test_diameter')+.8]:ax.add_patch(Circle((x,z),value('coil_test_diameter')/2,facecolor='#e45324',edgecolor='#8e321a'))
-ax.annotate(f'{value("winder_gap"):g} mm winding space\nCable sits UNDER keeper lips',xy=(wx+spacing/2+r,wtop+7),xytext=(25,wtop+22),arrowprops={'arrowstyle':'->'},fontsize=10)
-ax.text(24,wtop-8,'Two 6 mm loop cross-sections show tested space only.\nWrap only slack your actual cable can spare.',fontsize=9)
-ax.set_xlim(21,115);ax.set_ylim(wtop-12,wtop+28);ax.set_aspect('equal');ax.grid(alpha=.15)
-ax.set_title('Actual adapter section — protected winding area');ax.set_xlabel('X / mm');ax.set_ylabel('Z / mm')
-fig.suptitle('Built-in adjustable cable storage — no third printed part',fontsize=14)
+# Actual compact insert: front projection and storage-depth section.
+fig,axes=plt.subplots(1,2,figsize=(16,7));ax=axes[0]
+ax.add_collection(PolyCollection(adapter.triangles[:,:,[0,2]],facecolor='#4b7891',edgecolor='#35566b',linewidth=.07))
+ax.plot(coil[:,0],coil[:,2],color='#e45324',linewidth=3)
+ax.add_patch(Rectangle((-value('reference_insert_width')/2,0),value('reference_insert_width'),value('insertion_height'),fill=False,edgecolor='#36864d',linestyle='--',linewidth=2))
+ax.annotate('Wire and retaining tabs stay inside the insert',xy=(wx,wtop-r),xytext=(-98,18),arrowprops={'arrowstyle':'->'},fontsize=9)
+ax.set_xlim(-119,119);ax.set_ylim(-7,65);ax.set_aspect('equal');ax.grid(alpha=.15)
+ax.set_title('Front view: recessed storage; original stop flange unchanged');ax.set_xlabel('X / mm');ax.set_ylabel('Z / mm')
+ax=axes[1];sec=adapter.section(plane_origin=[wx+spacing/2,0,0],plane_normal=[1,0,0]);assert sec is not None
+for line in sec.discrete:ax.plot(line[:,1],line[:,2],color='#24495e',linewidth=2)
+for z in [wtop-r,wtop+r]:ax.add_patch(Circle((wy,z),value('coil_test_diameter')/2,facecolor='#e45324',edgecolor='#8e321a'))
+for y in [-depth/2,depth/2]:ax.axvline(y,color='#36864d',linestyle='--')
+ax.set_xlim(-12,12);ax.set_ylim(0,61);ax.set_aspect('equal');ax.grid(alpha=.15)
+ax.set_title('Real section: sample 6 mm cable inside 13.8 mm body');ax.set_xlabel('Y / mm');ax.set_ylabel('Z / mm')
+fig.suptitle('No external platform or spools — storage is removed from the existing insert\nOne illustrative loop; actual cable diameter, bend radius, usable slack and physical fit remain untested',fontsize=12)
 fig.tight_layout();fig.savefig(ROOT/'cable-winder.png',dpi=155);plt.close(fig)
 # Socket mounting diagram from actual adapter sections; gray hardware schematic.
 fig,axs=plt.subplots(1,2,figsize=(14,9));cy=value('female_center_y');face=value('female_socket_face_z')
@@ -167,13 +162,16 @@ report={'source_sha256':hashlib.sha256(SCAD.read_bytes()).hexdigest(),'printed_p
         'adapter_insertion_envelope_mm':[width,depth,value('insertion_height')],
         'female_socket_face_mm':[0,cy,face],'female_socket_facing_axis':[0,0,-1],'silicone_anchor_holes':4,
         'cradle_clearance_mm':gap,'cradle_seat_above_own_base_mm':value('seat_above_table'),
-        'winder':{'built_into_adapter':True,'cores':2,'core_radius_mm':value('winder_core_radius'),
-                  'spacing_mm':spacing,'gap_mm':value('winder_gap'),'keeper_radius_mm':value('winder_flange_radius'),
-                  'tested_wire_diameter_mm':value('coil_test_diameter'),'sample_loops_checked':2,
+        'winder':{'built_into_adapter':True,'recessed_inside_reference_envelope':True,'external_platform':False,
+                  'cores':2,'core_radius_mm':value('winder_core_radius'),'spacing_mm':spacing,
+                  'tested_wire_diameter_mm':value('coil_test_diameter'),'sample_loops_checked':1,
                   'length_per_sample_turn_mm':wrap_perimeter,'usable_turns_depend_on_actual_cable_reach':True},
+        'cradle_printability':{'continuous_seat_supports':True,'continuous_connector_support':True,
+                              'floating_mounting_wings':False,'window_roof_angle_deg':value('window_roof_angle'),
+                              'cable_entry':'front-open, pitched-roof chute','physical_print_verified':False},
         'collision_checks_empty':True,'physical_fit_verified':False,'electrical_engagement_verified':False,
         'loaded_balance_verified':False,'assembled_preview_is_only_example':True,
-        'assumptions':['Estimated 3 mm TPU per face; actual grip not measured.','Oversized silicone-mounted connector pockets; hardware dimensions unmeasured.','Dock envelopes illustrative, not a complete mechanical drawing.','Two sample coils verify space only, not that this cable can spare two full turns.'],
+        'assumptions':['Estimated 3 mm TPU per face; actual grip not measured.','Oversized silicone-mounted connector pockets; hardware dimensions unmeasured.','Dock envelopes illustrative, not a complete mechanical drawing.','One sample coil verifies space only, not actual cable diameter, minimum bend radius or available slack.'],
         'openscad_results':results}
 (ROOT/'validation.json').write_text(json.dumps(report,indent=2))
 print(json.dumps({k:v for k,v in report.items() if k!='openscad_results'},indent=2))

@@ -1,5 +1,5 @@
 {
-  "source_sha256": "e9cfff6ff6ee3a607eda294aa6f28e85729102172e2d8ce9f242a90423229a56",
+  "source_sha256": "cb5f7a270b8f558c7b6a258b89c8590c86e69d78f898ed60ffc4e4e4781d593f",
   "printed_parts": 2,
   "parts": {
     "adapter": {
@@ -8,12 +8,12 @@
       "connected_solids": 1,
       "dimensions_mm": [
         230.0,
-        81.0,
-        42.899999618529996
+        61.0,
+        13.79999961853
       ],
-      "volume_mm3": 179916.1129064135,
-      "triangles": 1816,
-      "sha256": "4d5aaa06030dd77bffc9dbdc7545080e2b9bf8fdf61962fb0f0ab24b89086c9f"
+      "volume_mm3": 131592.33593895493,
+      "triangles": 1704,
+      "sha256": "195cbe9e7b74f491bc97a572718d99d4a3a17e82c42ce72b7a2c6c833fa236bd"
     },
     "cradle": {
       "watertight": true,
@@ -24,9 +24,9 @@
         56.4884,
         83.2511
       ],
-      "volume_mm3": 153698.97295990904,
-      "triangles": 858,
-      "sha256": "ed192a3783f1e6af58ef5a7b244e7202f0f794f5269f50d05b21b751b395af90"
+      "volume_mm3": 267433.5867730788,
+      "triangles": 748,
+      "sha256": "53e0f3835348219d39deb1e033ba545b03a6a443807a1688519d8ca2c3541aff"
     }
   },
   "rigid_connection_between_parts": false,
@@ -69,7 +69,7 @@
         [
           -99.5,
           -6.8999999999999995,
-          15.0
+          14.999999999999998
         ],
         [
           99.5,
@@ -129,15 +129,23 @@
   "cradle_seat_above_own_base_mm": 55.0,
   "winder": {
     "built_into_adapter": true,
+    "recessed_inside_reference_envelope": true,
+    "external_platform": false,
     "cores": 2,
     "core_radius_mm": 12.0,
     "spacing_mm": 42.0,
-    "gap_mm": 14.0,
-    "keeper_radius_mm": 20.0,
     "tested_wire_diameter_mm": 6.0,
-    "sample_loops_checked": 2,
+    "sample_loops_checked": 1,
     "length_per_sample_turn_mm": 179.5044166691297,
     "usable_turns_depend_on_actual_cable_reach": true
+  },
+  "cradle_printability": {
+    "continuous_seat_supports": true,
+    "continuous_connector_support": true,
+    "floating_mounting_wings": false,
+    "window_roof_angle_deg": 60.0,
+    "cable_entry": "front-open, pitched-roof chute",
+    "physical_print_verified": false
   },
   "collision_checks_empty": true,
   "physical_fit_verified": false,
@@ -148,20 +156,20 @@
     "Estimated 3 mm TPU per face; actual grip not measured.",
     "Oversized silicone-mounted connector pockets; hardware dimensions unmeasured.",
     "Dock envelopes illustrative, not a complete mechanical drawing.",
-    "Two sample coils verify space only, not that this cable can spare two full turns."
+    "One sample coil verifies space only, not actual cable diameter, minimum bend radius or available slack."
   ],
   "openscad_results": {
     "adapter": [
       {
         "exit_code": 0,
         "expected_empty_intersection": false,
-        "log": "Geometries in cache: 75\nGeometry cache size in bytes: 945480\nCGAL Polyhedrons in cache: 23\nCGAL cache size in bytes: 19183312\nTotal rendering time: 0:00:06.349\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      902\n   Halfedges:    2736\n   Edges:        1368\n   Halffacets:    948\n   Facets:        474\n   Volumes:         2\n",
+        "log": "Geometries in cache: 82\nGeometry cache size in bytes: 976784\nCGAL Polyhedrons in cache: 26\nCGAL cache size in bytes: 18626944\nTotal rendering time: 0:00:06.485\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      846\n   Halfedges:    2568\n   Edges:        1284\n   Halffacets:    888\n   Facets:        444\n   Volumes:         2\n",
         "defines": []
       },
       {
         "exit_code": 0,
         "expected_empty_intersection": false,
-        "log": "Geometries in cache: 75\nGeometry cache size in bytes: 945480\nCGAL Polyhedrons in cache: 23\nCGAL cache size in bytes: 19183312\nTotal rendering time: 0:00:06.349\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      902\n   Halfedges:    2736\n   Edges:        1368\n   Halffacets:    948\n   Facets:        474\n   Volumes:         2\n",
+        "log": "Geometries in cache: 82\nGeometry cache size in bytes: 976784\nCGAL Polyhedrons in cache: 26\nCGAL cache size in bytes: 18626944\nTotal rendering time: 0:00:06.475\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      846\n   Halfedges:    2568\n   Edges:        1284\n   Halffacets:    888\n   Facets:        444\n   Volumes:         2\n",
         "defines": [
           "seating_stop_to_table=125.0"
         ]
@@ -171,13 +179,13 @@
       {
         "exit_code": 0,
         "expected_empty_intersection": false,
-        "log": "Geometries in cache: 63\nGeometry cache size in bytes: 528024\nCGAL Polyhedrons in cache: 19\nCGAL cache size in bytes: 5028192\nTotal rendering time: 0:00:01.994\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      427\n   Halfedges:    1316\n   Edges:         658\n   Halffacets:    460\n   Facets:        230\n   Volumes:         2\n",
+        "log": "Geometries in cache: 82\nGeometry cache size in bytes: 772728\nCGAL Polyhedrons in cache: 18\nCGAL cache size in bytes: 5302144\nTotal rendering time: 0:00:03.289\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      386\n   Halfedges:    1226\n   Edges:         613\n   Halffacets:    458\n   Facets:        229\n   Volumes:         2\n",
         "defines": []
       },
       {
         "exit_code": 0,
         "expected_empty_intersection": false,
-        "log": "Geometries in cache: 63\nGeometry cache size in bytes: 528024\nCGAL Polyhedrons in cache: 19\nCGAL cache size in bytes: 5028192\nTotal rendering time: 0:00:01.981\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      427\n   Halfedges:    1316\n   Edges:         658\n   Halffacets:    460\n   Facets:        230\n   Volumes:         2\n",
+        "log": "Geometries in cache: 82\nGeometry cache size in bytes: 772728\nCGAL Polyhedrons in cache: 18\nCGAL cache size in bytes: 5302144\nTotal rendering time: 0:00:03.134\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      386\n   Halfedges:    1226\n   Edges:         613\n   Halffacets:    458\n   Facets:        229\n   Volumes:         2\n",
         "defines": [
           "seating_stop_to_table=125.0"
         ]
@@ -187,7 +195,7 @@
       {
         "exit_code": 0,
         "expected_empty_intersection": false,
-        "log": "Geometries in cache: 137\nGeometry cache size in bytes: 1456456\nCGAL Polyhedrons in cache: 43\nCGAL cache size in bytes: 25472080\nTotal rendering time: 0:00:08.373\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:     1329\n   Halfedges:    4052\n   Edges:        2026\n   Halffacets:   1408\n   Facets:        704\n   Volumes:         3\n",
+        "log": "Geometries in cache: 163\nGeometry cache size in bytes: 1732464\nCGAL Polyhedrons in cache: 45\nCGAL cache size in bytes: 25101376\nTotal rendering time: 0:00:10.083\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:     1232\n   Halfedges:    3794\n   Edges:        1897\n   Halffacets:   1346\n   Facets:        673\n   Volumes:         3\n",
         "defines": []
       }
     ],
@@ -195,7 +203,7 @@
       {
         "exit_code": 0,
         "expected_empty_intersection": false,
-        "log": "Geometries in cache: 137\nGeometry cache size in bytes: 1456456\nCGAL Polyhedrons in cache: 46\nCGAL cache size in bytes: 28731376\nTotal rendering time: 0:00:08.526\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:     1329\n   Halfedges:    4052\n   Edges:        2026\n   Halffacets:   1408\n   Facets:        704\n   Volumes:         3\n",
+        "log": "Geometries in cache: 163\nGeometry cache size in bytes: 1732464\nCGAL Polyhedrons in cache: 48\nCGAL cache size in bytes: 28154224\nTotal rendering time: 0:00:10.075\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:     1232\n   Halfedges:    3794\n   Edges:        1897\n   Halffacets:   1346\n   Facets:        673\n   Volumes:         3\n",
         "defines": []
       }
     ],
@@ -203,7 +211,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 77\nGeometry cache size in bytes: 946936\nCGAL Polyhedrons in cache: 22\nCGAL cache size in bytes: 16554352\nTotal rendering time: 0:00:06.295\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 84\nGeometry cache size in bytes: 978240\nCGAL Polyhedrons in cache: 25\nCGAL cache size in bytes: 16160288\nTotal rendering time: 0:00:06.457\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -211,7 +219,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 78\nGeometry cache size in bytes: 947664\nCGAL Polyhedrons in cache: 23\nCGAL cache size in bytes: 16578480\nTotal rendering time: 0:00:06.328\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 85\nGeometry cache size in bytes: 978968\nCGAL Polyhedrons in cache: 26\nCGAL cache size in bytes: 16184416\nTotal rendering time: 0:00:06.436\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -219,7 +227,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 99\nGeometry cache size in bytes: 1402056\nCGAL Polyhedrons in cache: 24\nCGAL cache size in bytes: 18363600\nTotal rendering time: 0:00:07.969\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 106\nGeometry cache size in bytes: 1433360\nCGAL Polyhedrons in cache: 27\nCGAL cache size in bytes: 17969536\nTotal rendering time: 0:00:08.095\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -227,7 +235,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 228\nGeometry cache size in bytes: 3823776\nCGAL Polyhedrons in cache: 27\nCGAL cache size in bytes: 24094448\nTotal rendering time: 0:00:24.696\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 159\nGeometry cache size in bytes: 2465064\nCGAL Polyhedrons in cache: 28\nCGAL cache size in bytes: 21065104\nTotal rendering time: 0:00:13.296\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -235,7 +243,23 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 156\nGeometry cache size in bytes: 2880480\nCGAL Polyhedrons in cache: 7\nCGAL cache size in bytes: 7564224\nTotal rendering time: 0:00:18.365\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 80\nGeometry cache size in bytes: 1490464\nCGAL Polyhedrons in cache: 5\nCGAL cache size in bytes: 4928944\nTotal rendering time: 0:00:06.658\nCurrent top level object is empty.\n",
+        "defines": []
+      }
+    ],
+    "coil_inside_body_check": [
+      {
+        "exit_code": 1,
+        "expected_empty_intersection": true,
+        "log": "Geometries in cache: 79\nGeometry cache size in bytes: 1489736\nCGAL Polyhedrons in cache: 4\nCGAL cache size in bytes: 4904816\nTotal rendering time: 0:00:06.712\nCurrent top level object is empty.\n",
+        "defines": []
+      }
+    ],
+    "loaded_envelope_check": [
+      {
+        "exit_code": 1,
+        "expected_empty_intersection": true,
+        "log": "Geometries in cache: 161\nGeometry cache size in bytes: 2466520\nCGAL Polyhedrons in cache: 29\nCGAL cache size in bytes: 24501392\nTotal rendering time: 0:00:13.592\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -243,7 +267,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 67\nGeometry cache size in bytes: 530936\nCGAL Polyhedrons in cache: 19\nCGAL cache size in bytes: 4397856\nTotal rendering time: 0:00:01.952\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 86\nGeometry cache size in bytes: 775640\nCGAL Polyhedrons in cache: 18\nCGAL cache size in bytes: 4715952\nTotal rendering time: 0:00:03.260\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -251,7 +275,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 87\nGeometry cache size in bytes: 987192\nCGAL Polyhedrons in cache: 21\nCGAL cache size in bytes: 6401792\nTotal rendering time: 0:00:03.640\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 118\nGeometry cache size in bytes: 1466424\nCGAL Polyhedrons in cache: 20\nCGAL cache size in bytes: 7267680\nTotal rendering time: 0:00:06.189\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -259,7 +283,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 89\nGeometry cache size in bytes: 988648\nCGAL Polyhedrons in cache: 22\nCGAL cache size in bytes: 8076192\nTotal rendering time: 0:00:03.673\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 120\nGeometry cache size in bytes: 1467880\nCGAL Polyhedrons in cache: 21\nCGAL cache size in bytes: 9166288\nTotal rendering time: 0:00:06.195\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -267,7 +291,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 137\nGeometry cache size in bytes: 1456456\nCGAL Polyhedrons in cache: 41\nCGAL cache size in bytes: 21582544\nTotal rendering time: 0:00:08.361\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 163\nGeometry cache size in bytes: 1732464\nCGAL Polyhedrons in cache: 43\nCGAL cache size in bytes: 21462432\nTotal rendering time: 0:00:09.954\nCurrent top level object is empty.\n",
         "defines": []
       }
     ],
@@ -275,7 +299,7 @@
       {
         "exit_code": 1,
         "expected_empty_intersection": true,
-        "log": "Geometries in cache: 80\nGeometry cache size in bytes: 949120\nCGAL Polyhedrons in cache: 22\nCGAL cache size in bytes: 16554352\nTotal rendering time: 0:00:06.402\nCurrent top level object is empty.\n",
+        "log": "Geometries in cache: 87\nGeometry cache size in bytes: 980424\nCGAL Polyhedrons in cache: 25\nCGAL cache size in bytes: 16160288\nTotal rendering time: 0:00:06.318\nCurrent top level object is empty.\n",
         "defines": []
       }
     ]
