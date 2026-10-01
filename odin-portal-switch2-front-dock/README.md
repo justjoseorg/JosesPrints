@@ -10,11 +10,31 @@ A narrow outer-right arm and L-shaped ground link connect the insert to the fron
 
 The top view confirms the cable goes around the dock's right wall. It then runs forward low down, across a lay-in channel and turns up into the Odin's integral USB-C pocket. In the side projection the cable overlaps the dock visually because X is collapsed; it is outside the wall in 3D.
 
+## Docking USB connection—not just a cable passage
+
+![Captured female connector and mating direction](dock-interface.png)
+
+The **female receptacle of your existing extension cable is installed and fixed INSIDE the bottom of the docking insert**, facing down. Its receiving face is aligned with the uploaded reference's datum at `female_socket_face_z=0`, centered at X=0, Y=−1.8 mm. The printed pocket has an upper housing shoulder and **four silicone-key anchor holes** to retain the cable end after alignment and curing.
+
+```text
+Nintendo dock's upward MALE USB-C plug
+                ↑ mates when whole adapter slides down
+Extension's downward FEMALE socket fixed inside insert
+                → cable exits RIGHT SIDE
+Extension's upward MALE plug fixed in front cradle
+                → Odin 2 Portal
+```
+
+Once the cable end is fitted and immobilized, docking the printed unit is intended to mate the USB connection automatically; there should not be a loose cable end to plug into the Nintendo dock each time. The printed part positions the socket; your existing cable supplies the actual metal contacts. Hardware silhouettes in the diagram are schematic, not measured LEIRUI housings or proof of engagement depth.
+
+**Set alignment and test full, gentle engagement before curing.** Use a protected alignment jig; keep silicone out of the receptacle and trim cured keys flush with both insert faces so the original fitting envelope stays clear. Do not add a spacer beneath the socket mouth or let the USB connector support the weight. Automatic mating has not been physically verified.
+
 ## Files
 
 - **[adapter.stl](adapter.stl): the only printable part**, already in rear-face-down print orientation.
 - [odin_portal_dock.scad](odin_portal_dock.scad): editable source of truth.
 - [print-orientation.png](print-orientation.png): print layout/orientation.
+- [dock-interface.png](dock-interface.png): female-end mounting and actual docking direction.
 - [verify_model.py](verify_model.py): regenerate and validate artifacts.
 - [validation.json](validation.json): actual geometry results and hashes.
 - [reference-measurements.json](reference-measurements.json): measured datums from your uploaded v14 reference.
@@ -48,7 +68,9 @@ Print-oriented bounds: approximately **231 × 125 × 94.9 mm**, before support/b
 | `insertion_height` | 50 mm | Blade depth to stop |
 | `seat_y` | −70 mm | Front cradle position |
 | `tpu_per_face`, `fit_clearance` | 3 / 2 mm | Assumed TPU allowance and total extra seat clearance |
-| `female_width/depth/height` | 22 × 14 × 30 mm | Oversized dock-side housing pocket |
+| `female_width/depth/height` | 22 × 14 × 30 mm | Oversized dock-side female housing pocket |
+| `female_socket_face_z` | 0 mm | Down-facing receiving-face datum; adjust only for verified actual engagement |
+| `female_anchor_diameter` | 3 mm | Four rear silicone-key holes retaining the female cable end |
 | `male_width/depth/height` | 22 × 14 × 29 mm | Oversized Odin-side housing pocket |
 | `cable_bend_radius` | 12 mm | Rounded cable turns; check actual cable minimum radius |
 | `wire_diameter_allowance` | 8 mm | Carved channel allowance; actual clearance test uses a 6 mm wire |
@@ -60,11 +82,11 @@ Connector pockets are generous silicone-adjustment allowances, **not measured LE
 Use your working **LEIRUI USB4 male/female extension, ASIN B09L4Q85CH**. You reported charging and TV output working; that electrical behavior was not independently tested here.
 
 1. Remove the old printed insert. This one-piece unit replaces it.
-2. With power disconnected, place the female housing in the lower insertion-blade pocket and align its socket with the Nintendo dock's upward-facing plug. Adjust seating height/position before fixing it; do not use the plug to carry structural load.
+2. With power disconnected, install the extension's **female end inside the lower insertion-blade pocket with its socket facing DOWN**. Align its receiving face with the reference datum and verify the OEM upward plug enters fully as you slide the whole adapter in. Immobilize the housing with keyed silicone only after alignment, using a protected jig. The connector must not carry structural weight.
 3. Lay the wire in the front-open insert channel, bend it toward the **right-side exit**, and lay it into the outer side-arm groove.
 4. Route down outside the Nintendo right wall, then forward along the ground link. Lay the cross-feed into its open slots below the Odin; no preterminated plug needs threading through a sealed wire-sized tunnel.
 5. Seat the male housing in the integral Odin pocket, aligned with the 15° cradle. Bed the housings using electronics-safe non-corrosive neutral-cure silicone. Keep it out of ports, contacts and vents; use a protected jig and let it cure completely. Retain excess cable away from ventilation.
-6. Insert the whole unit into the Nintendo dock until the stop seats, with both the Nintendo dock and the printed base on the table. Place the TPU-covered Odin in the cradle; its weight travels through the front legs into the tabletop, not through its USB-C connector.
+6. After curing and trimming, insert the whole unit into the Nintendo dock until the stop seats: its OEM male plug should engage the fixed female extension socket automatically. The Nintendo dock and printed base must both rest on the table. Place the TPU-covered Odin in the cradle; its weight travels through the front legs into the tabletop, not through its USB-C connector.
 7. Test fit, gentle docking cycles, charging/video, sliding/tipping, ventilation and temperature before unattended use. Do not force a misaligned connector or use silicone to compensate for a leveling mismatch.
 
 ## Printing
@@ -84,13 +106,14 @@ uv run --python 3.11 --with trimesh --with scipy --with networkx --with matplotl
 
 The verifier also regenerates previews. Set `OPENSCAD_BIN` if needed; PNG rendering requires a graphics display/OpenGL context, which may be virtual on Linux.
 
-Selectors: `adapter`, `assembled`, `placement`, `cable_check`, `dock_clearance_check`, `device_clearance_check`, `table_check`, `cable_device_check`, `cable_dock_check`.
+Selectors: `adapter`, `assembled`, `placement`, `cable_check`, `dock_clearance_check`, `device_clearance_check`, `table_check`, `cable_device_check`, `cable_dock_check`, `dock_usb_entry_check`.
 
 Verified with actual exports:
 - Exactly one connected, watertight, positive-volume printable solid.
 - Docking-blade envelope checked at four heights; external side link excluded from those blade bounds.
 - Front sole matches modeled Nintendo tabletop; side link stays outside the official width envelope and has no collision with simplified dock walls.
 - Complete 6 mm wire path clears print, device, dock walls and space below table.
+- Down-facing OEM plug entry is unobstructed within a 12.2 × 6.7 mm reference-derived access envelope; this is a clearance check, not a measured real OEM plug or electrical engagement test. Female mounting face/orientation and four silicone-key holes are recorded in `validation.json`.
 - Device envelope clears print; only 0.02 mm of intentional seat-contact plane is excluded numerically.
 - Device-envelope centroid projects inside the front sole, with approximately **12.3 mm** front/back margin. This is a geometric proxy, **not measured real-device COM or a loaded tipping-force test**.
 - Source/STL hashes and actual OpenSCAD results are recorded. Empty collision exports are expected and handled explicitly. Previews inspected in a headless display.

@@ -1,6 +1,6 @@
 // ONE print: dock insert, RIGHT-SIDE cable exit/link, low tabletop Odin cradle.
 // Reference measured for datums only; no imported/redistributed mesh.
-part="adapter"; // [adapter,assembled,placement,cable_check,dock_clearance_check,device_clearance_check,table_check,cable_device_check,cable_dock_check]
+part="adapter"; // [adapter,assembled,placement,cable_check,dock_clearance_check,device_clearance_check,table_check,cable_device_check,cable_dock_check,dock_usb_entry_check]
 $fn=48;
 reference_insert_width=200;
 reference_depth_envelope=14.3;
@@ -55,6 +55,13 @@ side_foot_front=-48;
 side_foot_rear=6;
 // Connector housings bedded in electronics-safe neutral-cure silicone.
 female_center_y=-1.8;
+female_socket_face_z=0; // socket faces DOWN (-Z), aligned with reference docking datum
+female_anchor_diameter=3;
+female_anchor_x=8;
+female_anchor_low=8;
+female_anchor_high=20;
+dock_usb_access_width=12.2; // keepout from supplied reference central bore, not measured OEM plug
+dock_usb_access_depth=6.7;
 female_width=22;
 female_depth=14;
 female_height=30;
@@ -168,7 +175,11 @@ module front_open_exit(){
  box([r,return_y-5,return_z],[side_column_x-r+5,10,14]);
 }
 module pockets(){
- box([-female_width/2,female_center_y-female_depth/2,-eps],[female_width,female_depth,female_height+eps]);
+ box([-female_width/2,female_center_y-female_depth/2,female_socket_face_z-eps],[female_width,female_depth,female_height+eps]);
+ // Four rear key holes anchor silicone so the FEMALE cable end stays captured.
+ // Trim cured silicone flush with the insert rear face; preserve docking envelope.
+ for(x=[-female_anchor_x,female_anchor_x],z=[female_anchor_low,female_anchor_high])
+  translate([x,insert_depth/2,z+female_socket_face_z])rotate([90,0,0])cylinder(d=female_anchor_diameter,h=4,center=true);
  seated(){
   box([-male_width/2,mid-male_depth/2,-male_height],[male_width,male_depth,male_height+eps]);
   translate([0,mid,-holder_height-eps])cylinder(d=wire_outlet,h=housing_floor+2*eps);
@@ -183,6 +194,11 @@ module adapter_assembled(){
   pockets();wire_path(wire_diameter_allowance);front_open_exit();device_clearance();
  }
 }
+module dock_usb_entry_keepout(){
+ // Access to female socket from BELOW. Keep print clear; hardware not printed.
+ box([-dock_usb_access_width/2,female_center_y-dock_usb_access_depth/2,female_socket_face_z-1],
+     [dock_usb_access_width,dock_usb_access_depth,7]);
+}
 module illustrative_dock(){
  box([-dock_width/2,-dock_depth/2,tabletop_z],[dock_width,dock_depth/2-8,dock_height]);
  box([-dock_width/2,8,tabletop_z],[dock_width,dock_depth/2-8,dock_height]);
@@ -193,6 +209,7 @@ else if(part=="placement"){
  color([.3,.48,.6])adapter_assembled();
  %illustrative_dock();%device_envelope();%color([1,.5,.1])wire_path();
 }
+else if(part=="dock_usb_entry_check")intersection(){adapter_assembled();dock_usb_entry_keepout();}
 else if(part=="cable_check")intersection(){adapter_assembled();wire_path();}
 else if(part=="dock_clearance_check")intersection(){adapter_assembled();illustrative_dock();}
 else if(part=="device_clearance_check")intersection(){adapter_assembled();device_envelope();}
