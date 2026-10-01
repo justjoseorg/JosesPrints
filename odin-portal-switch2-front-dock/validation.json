@@ -1,0 +1,34 @@
+{
+  "front-cradle": {
+    "watertight": true,
+    "connected_solids": 1,
+    "dimensions_mm": [
+      190.0,
+      180.0,
+      100.013
+    ],
+    "volume_mm3": 360488.5264982323
+  },
+  "usb-carrier": {
+    "watertight": true,
+    "connected_solids": 1,
+    "dimensions_mm": [
+      56.0,
+      20.000000572205,
+      32.0
+    ],
+    "volume_mm3": 9433.067276051639
+  },
+  "fit-gauge": {
+    "watertight": true,
+    "connected_solids": 1,
+    "dimensions_mm": [
+      80.0,
+      33.2,
+      10.0
+    ],
+    "volume_mm3": 10956.0
+  },
+  "carrier_stand_collision_mm3": 0.003945148481105364,
+  "physical_fit_verified": false
+}
