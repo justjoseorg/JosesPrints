@@ -23,6 +23,6 @@ Parametric OpenSCAD or editable Blender models and ready-to-print STL files.
 | [1-1/2-inch to dual 3/4-inch conduit adapter](1-1-2-to-dual-3-4in-conduit-adapter/) | Female 1-1/2-inch inlet feeding two female 3/4-inch conduit exits |
 | [1-inch to dual 3/4-inch conduit adapter](1in-to-dual-3-4in-conduit-adapter/) | Snug-fit female 1-inch PVC inlet feeding two female 3/4-inch outlets |
 | [Octagonal 1-1/2-inch to eight 3/4-inch conduit access box](1-1-2-to-octagonal-8x-3-4in-conduit-adapter/) | Open-top octagonal box with a female bottom inlet and one horizontal female exit per side |
-| [Odin 2 Portal / Switch 2 front dock](odin-portal-switch2-front-dock/) | TPU-clearance cradle with an adjustable USB-C carrier; works alongside the user's existing modified dock insert (fit-test prototype) |
+| [Odin 2 Portal / Switch 2 front dock](odin-portal-switch2-front-dock/) | One-piece dock-insert adapter with an over-front cable bridge, TPU-clearance Odin cradle and integral USB-C pockets |
 
 Each print has its own source, STL files, rendered preview, and printing notes.

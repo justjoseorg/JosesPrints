@@ -1,0 +1,16 @@
+{
+  "reference_filename": "Switch+2+Dock+Adapter+v14.stl",
+  "reference_sha256": "e492b81c239e6513efbebaac2f4aac930c34595dab760c56a5be64caf47a5fba",
+  "reference_size_bytes": 497384,
+  "source_bounds_mm": [[-115.0, -1.0, -7.150000095367432], [115.0, 60.0, 7.150000095367432]],
+  "source_axes": {"X": "width", "Y": "insertion height", "Z": "depth"},
+  "source_height_15mm_outer_section_bounds": [[-100.0, 15.0, -7.150000095367432], [100.0, 15.0, 7.150000095367432]],
+  "source_height_15mm_central_bore_bounds": [[-6.098571300506592, 15.0, -1.5499999523162842], [6.098571300506592, 15.0, 5.150000095367432]],
+  "source_central_bore_depth_center_mm": 1.8000000715255737,
+  "flange_start_height_mm": 50.0,
+  "source_bottom_contact_section_height_mm": -0.5,
+  "source_bottom_contact_centers_x_mm": [-95.0, 95.0],
+  "source_bottom_contact_depth_bounds_mm": [-5.7778154964288335, -0.5839745998382568],
+  "source_bottom_contact_width_mm": 2.0,
+  "note": "Reference examined only for fit datums. Mesh not imported or redistributed. This is the nominal original file, not the user's manually enlarged printed pocket."
+}

@@ -1,92 +1,107 @@
-# Odin 2 Portal front cradle for the Switch 2 dock
+# One-piece Switch 2 dock adapter for the Odin 2 Portal
 
-![Assembled front cradle](preview.png)
+![One-piece adapter](preview.png)
 
-**Original OpenSCAD fit-test prototype. Not physically printed or fit-tested.**
+**ONE printed piece that docks into the Nintendo Switch 2 dock, like a Killswitch-style adapter.** The insertion blade, top stop, over-front cable bridge, TPU-clearance Odin cradle, and both USB-C housing pockets are fused into one solid. There is **no separate stand, removable carrier, screw assembly, or platform underneath the Nintendo dock**.
 
-This cradle holds the Odin 2 Portal with its official AYN TPU grip immediately in front of the Switch 2 dock. It shares a base with the existing dock and routes an extension cable underneath. **Keep your existing, manually enlarged MakerWorld insert inside the dock:** this model is its companion, not a replacement insert or a literal merge of third-party meshes.
+This replaces the incorrect companion-stand version previously in this folder. Its files remain available only in Git history.
 
-The user's LEIRUI USB4 extension, Amazon ASIN **B09L4Q85CH**, is reported to provide video and charging with this device/dock. Electrical compatibility has not been independently tested.
+![Placement and cable route](placement.png)
 
-## Files
+The blue shape is the actual adapter projection. Cyan is an illustrative Odin envelope using official dimensions plus estimated TPU allowance; gray dock walls are illustrative clearance envelopes, **not a complete measured dock model**. Orange shows the extension wire and its accessible slack loop. The cable pockets are part of the print, but the USB connectors and cable are your existing hardware.
 
-| File | Purpose |
-| --- | --- |
-| [odin_portal_dock.scad](odin_portal_dock.scad) | Parametric source of truth; default view is the print layout |
-| [front-cradle.stl](front-cradle.stl) | Main cradle and rear dock platform |
-| [usb-carrier.stl](usb-carrier.stl) | Removable oversized male USB-C holder |
-| [fit-gauge.stl](fit-gauge.stl) | Small TPU-gap and connector-pocket test |
-| [layout.png](layout.png) | All printable parts shown separately |
-| [validation.json](validation.json) | Exported mesh/connectivity/collision checks |
+## Download and source
 
-![Separate printable parts](layout.png)
+- **[adapter.stl](adapter.stl): the only printable part.** Already oriented rear insert face down.
+- [odin_portal_dock.scad](odin_portal_dock.scad): editable parametric source of truth.
+- [print-orientation.png](print-orientation.png): exported print orientation.
+- [verify_model.py](verify_model.py): repeatable generation, connectivity, envelope and collision checks.
+- [validation.json](validation.json): actual check results and artifact hashes.
+- [reference-measurements.json](reference-measurements.json): datums and hash from the user-supplied `Switch+2+Dock+Adapter+v14.stl`.
 
-## Dimensions and adjustable parameters
+## Fit dimensions
 
-AYN's official specification image gives **257 × 98.6 × 17.2 mm** for the Odin 2 Portal. Its grip-inclusive thickness and exact port coordinates are not supplied in that image.
+The uploaded reference was inspected for mechanical datums; its mesh is not imported or bundled. Its source axes were X=width, Y=insertion height, Z=depth. Measured section at height 15 mm: **200 mm-wide body with a 14.3 mm depth envelope**. Its upper stop begins at **50 mm**, with a **230 mm-wide flange**. The central rounded bore's depth center is **1.8 mm** off the middle plane.
+
+The new, independently constructed insertion blade is **199 × 13.8 mm**, with **50 mm to the stop**, a tapered entry and small bottom support feet at the reference's ±95 mm lateral contact positions. The slight reduction versus the reference envelope is deliberate clearance. This is reference-derived fit geometry, **not a physical fit test or an exact clone**. The uploaded file is nominal v14, not a scan of your manually enlarged printed copy.
+
+AYN's official Odin 2 Portal dimensions are **257 × 98.6 × 17.2 mm**. The cradle has **25.2 mm clear depth**, comprising the 17.2 mm body, an estimated 3 mm TPU allowance per face, and 2 mm extra total fit clearance. The cradle supports the central 160 mm, leaves the end grips unconstrained, and leans back 15°.
+
+Print-oriented model bounds: approximately **230 × 95.1 × 82.7 mm**. Allow additional bed space for supports and brim; do not scale the whole model to fit a smaller bed.
+
+## Adjustable parameters
 
 | Parameter | Default | Meaning |
 | --- | --- | --- |
-| `odin_thickness` | 17.2 mm | Official body thickness |
-| `tpu_per_face` | 3 mm | Estimated TPU allowance on each face; not a published AYN grip measurement |
-| `fit_allowance` | 2 mm total | Additional fitting clearance |
-| `seat_gap` | 25.2 mm, calculated | Clear depth between front and rear contacts |
-| `tilt` | 15° | Rearward lean from vertical |
-| `seat_height` | 65 mm | Seat datum above the build plate |
-| `support_width` | 160 mm | Central support; end grips remain unconstrained |
-| `base_width`, `base_depth` | 190 × 180 mm | Main print footprint, before brim/support margin |
-| `base_height` | 8 mm | Rear platform thickness |
-| `pocket_width/depth/height` | 22 × 14 × 29 mm | Oversized connector cavity, not measured LEIRUI dimensions |
-| `mount_travel` | 10 mm total | Fore/aft carrier adjustment |
-| `mount_pitch` | 46 mm | Two M3 carrier mounting points |
-| `wire_outlet` | 9 mm | Carrier cable exit |
-| `cable_channel_width/depth` | 12 × 6 mm | Groove under existing dock |
+| `insert_width_clearance` | 1 mm total | Width reduction from reference 200 mm |
+| `insert_depth_clearance` | 0.5 mm total | Reduction from reference 14.3 mm envelope |
+| `insertion_height` | 50 mm | Blade depth before the top stop |
+| `flange_width` | 230 mm | Integral seating stop |
+| `tpu_per_face` | 3 mm | Estimated shell thickness allowance, not an AYN published grip dimension |
+| `fit_clearance` | 2 mm total | Extra space in the Odin seat |
+| `tilt` | 15° | Backward lean |
+| `seat_y` | −70 mm | Cradle position in front of the insert; negative Y is forward |
+| `seat_height` | 62 mm | Relative to reference insert bottom, not desk height |
+| `female_width/depth/height` | 22 × 14 × 30 mm | Oversized dock-side receptacle housing pocket |
+| `male_width/depth/height` | 22 × 14 × 29 mm | Oversized Odin-side male plug housing pocket |
+| `channel_width` | 10 mm | Open wire trough width |
+| `wire_diameter_allowance` | 8 mm | Carved bend allowance |
+| `cable_bend_radius` | 20 mm | Turn from insert up and over the dock lip |
+| `front_bend_radius` | 12 mm | Front turn down into slack loop |
+| `wire_outlet` | 9 mm | Odin-side pocket wire opening |
 
-Main print height is approximately **100 mm**. The rear is open except for two narrow, low contact rails; check actual ventilation clearance on your device. The USB position is approximately centered from official imagery, not a measured datum. Silicone bedding sets connector height and position. Some brace geometry uses explicit coordinates in `stand()`; inspect the whole assembly after major parameter changes.
+The pockets deliberately leave room for silicone. Their dimensions are **not claimed measurements of your LEIRUI cable**. Check your cable's actual housing size and bend-radius requirements. Larger bend radii or changed cradle depth must be regenerated and rechecked; several dimensional relationships and structural connections are coupled.
 
-## Hardware and assembly
+## Hardware and cable installation
 
-- Your already-fitting dock insert and working male/female USB-C extension.
-- Two **M3 × 12 mm low-profile screws** and nuts for the removable carrier. Heads must fit the 2 mm-deep shelf recesses; verify no hardware projects into the handheld's seating area.
-- Electronics-safe **non-corrosive neutral-cure silicone** to bed the connector housing.
-- Optional felt/silicone contact pads, rubber feet and a removable dock-retention strap.
+Use your working **LEIRUI USB4 male/female extension, ASIN B09L4Q85CH**. You reported both charging and video working with this cable/device/dock combination; that electrical behavior has not been independently tested.
 
-1. **Print the fit gauge and carrier first.** Test the TPU-covered center bottom edge and the actual male connector housing. The gauge checks nominal clearance, not full tilted-seat fit or port position.
-2. Put the Nintendo dock on the rear platform, approximately 100 mm from the platform's front. There is no dock-specific clamp; use non-slip pads/retention if needed and test stability. The dock supplies ballast.
-3. Leave the modified insert in the dock. Route its cable over an accessible edge, down behind the dock, through the rear base groove, then forward beneath the raised cradle. The vertical run remains accessible, not fully enclosed. Do not drill or modify the Nintendo dock. Check the cable is not pinched under it.
-4. Fasten the carrier under the shelf. Its flange meets the shelf underside; mounting slots allow fore/aft alignment.
-5. With power disconnected, align the male plug and place the Odin on the seat. **The seat/pads must carry the weight, not the USB-C connector.** Do not force docking or bend the port to achieve alignment.
-6. Secure the housing with silicone while preserving the required engagement height. Keep silicone out of contacts, ports and vents. Use a masked positioning jig; do not cure against an unprotected handheld. Let it cure fully before reconnecting.
-7. Check charging/video, gentle insertion/removal, airflow, temperature and tipping resistance. Stop if the port bears weight, seating needs force, signal is intermittent or the cable is pinched.
+1. Remove the old printed insert from the Nintendo dock. This new one-piece adapter **replaces it**.
+2. With power disconnected, load the cable's **female housing into the adapter's lower docking-blade pocket**, so its socket can mate with the dock's upward-facing USB-C plug. Use the front/bottom opening for installation. Adjust its seating height and lateral alignment before fixing it; never force the Nintendo connector.
+3. Lay the wire into the front-open vertical groove and the top-open bridge trough. It emerges above the dock lip, crosses forward through the print and drops through the exit notch.
+4. Leave a gentle slack loop underneath the Odin cradle. Feed the cable's male housing into the **integrated** cradle pocket; its metal plug points upward at the same 15° tilt as the cradle. Both ends can be loaded through open slots; no plug needs threading through a sealed wire-sized tunnel.
+5. Bed the housings with electronics-safe, non-corrosive **neutral-cure silicone**. Keep it out of sockets/contacts and vents. Use a masked alignment jig and allow full cure. Do not cure against unprotected handheld/dock surfaces. Keep excess cable loose and retained away from vents; this adapter does not contain a sealed compartment for all 0.5 m of cable.
+6. Lift the complete adapter and dock its blade into the Switch 2 dock until the integral stop seats. The blade/stop, **not the USB plug**, must carry the print's weight.
+7. Dock the TPU-covered Odin in the front cradle. Its weight rests on the printed seat/contact pads, **not on its USB-C port**. Do not bend either connector to correct a misalignment.
+8. Test gentle insertion/removal, charging/video, ventilation and tip resistance before unattended use. Because the Odin is cantilevered in front, check that the Nintendo dock cannot tip or slide during use. Stop if seating needs force, cable insulation is pinched, the port bears weight, or signal is intermittent.
+
+No mounting screws or other printed components are required. Optional thin felt/silicone contact pads can improve surface protection and take up clearance without changing the one-piece construction.
 
 ## Printing
 
-Print all STLs at **100% scale** in their exported orientations:
+![Back-face-down print orientation](print-orientation.png)
 
-- **Main cradle:** broad base down. Enable build-plate/tree supports for the elevated shelf and inspect all overhangs in your slicer. Triangular brace openings may also need support according to your printer's capability.
-- **Carrier:** bottom down as exported. Its elevated mounting flange may need supports; keep the cable cavity and screw holes clear.
-- **Gauge:** flat underside down; normally no supports.
+Print `adapter.stl` at **100% scale**, in its exported **rear insert face-down** orientation. Do not print the visual `assembled` orientation unless you deliberately redesign the support strategy.
 
-Suggested starting settings: PETG, 0.2 mm layers, 4 walls, 20–30% infill. These settings are not physically tested. Allow bed space for the 190 × 180 mm footprint plus brim and supports. Deburr edges and remove every support fragment from contact/connector areas.
+Suggested starting settings: PETG, 0.2 mm layers, 4–5 walls, 25–35% infill, brim as needed. **Supports are required beneath the raised front cradle, projecting lips and pocket/channel roofs in this orientation.** Inspect your slicer's layer/support preview, keep supports removable, and clean the female socket pocket, male pocket, cable channel and outlet completely. Deburr square edges and add protective pads where needed. Printer settings and mechanical strength are not physically tested.
 
-## Regeneration and validation
+## Regenerate and verify
+
+Basic exports:
 
 ```sh
-openscad --render -D 'part="stand"' -o front-cradle.stl odin_portal_dock.scad
-openscad --render -D 'part="carrier"' -o usb-carrier.stl odin_portal_dock.scad
-openscad --render -D 'part="gauge"' -o fit-gauge.stl odin_portal_dock.scad
-openscad --render --autocenter --viewall --projection=ortho --imgsize=1200,900 --colorscheme=Tomorrow -D 'part="assembled"' -o preview.png odin_portal_dock.scad
-openscad --render --autocenter --viewall --projection=ortho --imgsize=1200,900 --colorscheme=Tomorrow -D 'part="layout"' -o layout.png odin_portal_dock.scad
+openscad --render -D 'part="adapter"' -o adapter.stl odin_portal_dock.scad
+openscad --render --autocenter --viewall --projection=ortho --imgsize=1400,1000 --colorscheme=Tomorrow -D 'part="assembled"' -o preview.png odin_portal_dock.scad
 ```
 
-Selectors: `stand`, `carrier`, `gauge`, `assembled`, `layout`, `placement`, `collision_check`. `placement` adds background device/dock boxes only for illustration: **dock dimensions are unverified**. `collision_check` should have no positive-volume solid; coplanar mounting faces are intentional contact.
+Complete repeatable checks (requires OpenSCAD and a working graphics display, which may be virtual):
 
-Actual checks: all three STLs generated with OpenSCAD 2021.01 without errors, each watertight and positive-volume with one connected solid. Carrier alignment was checked using the assembled transforms and a Manifold Boolean intersection of exported meshes. Intersection was below **0.01 mm³** (numerical tolerance for tessellated shared contact faces), not meaningful structural overlap. M3 through-holes, recessed heads, slots and a mounting flange are modeled explicitly. Assembly/layout previews inspected. No physical fit, live electrical, insertion-force or thermal test performed. The render was generated in a headless virtual display; interactive review on the user's display was not possible.
+```sh
+uv run --python 3.11 --with trimesh --with scipy --with networkx --with matplotlib --no-project python verify_model.py
+```
 
-## References and licensing scope
+Set `OPENSCAD_BIN` if OpenSCAD is not on PATH. PNG rendering needs `DISPLAY`/OpenGL on Linux. The generator does not import the private reference mesh.
 
-- [Official AYN product](https://www.ayntec.com/products/odin2-portal) and [current specification image](https://www.ayntec.com/cdn/shop/files/odin2-portal_7_a9a0c473-3e93-4c62-885f-e1e904205da8.jpg?v=1737092883).
-- [Dock extension adapter by adimaniac](https://makerworld.com/en/models/1583137-nintendo-switch-2-dock-usb-c-extension-adapter): its author lists a 6 × 12 mm female housing; the user's copy is manually enlarged. Standard Digital File License restricts redistribution/remixing. **Its source/mesh is not imported, modified or included.**
-- [TPU-compatible Odin stand by Martin Mesa](https://www.printables.com/model/1417821-odin-2-portal-stand): layout reference for an inclined, low-contact cradle, licensed Creative Commons Attribution–NonCommercial. Its mesh was not downloaded/imported; this model does not claim its original exact fit.
+Selectors: `adapter` for printing, `assembled`, `placement`, `cable_check`, `dock_clearance_check`, and `device_clearance_check`. This design has only one printed part, so there is no multi-part layout to assemble.
 
-The included geometry is independently constructed in OpenSCAD. This is not an official Nintendo, AYN or dbrand product.
+Verified from actual exports: **one connected solid**, watertight, positive-volume STL; insertion envelope checked at four heights; a **6 mm test cable has no positive-volume intersection along the complete modeled route**, including the loose return loop and male pocket entry; no intersection with the explicitly illustrative dock walls or the Odin-plus-TPU envelope. The device check excludes only 0.02 mm at the intentional seat-contact plane to avoid degenerate coplanar faces. Empty OpenSCAD intersection exports return code 1 with `Current top level object is empty.`—the verifier treats that as the expected check result, not a successful physical fit test. The previews were generated and inspected in a headless virtual display; no interactive review on the user's screen occurred.
+
+**Not verified:** actual dock fit, measured TPU fit, housing engagement, printer-specific support removal, electrical behavior, temperatures, and stability. `physical_fit_verified` remains false.
+
+## References
+
+- [AYN Odin 2 Portal](https://www.ayntec.com/products/odin2-portal), [official specification image](https://www.ayntec.com/cdn/shop/files/odin2-portal_7_a9a0c473-3e93-4c62-885f-e1e904205da8.jpg?v=1737092883).
+- [Dock extension adapter by adimaniac](https://makerworld.com/en/models/1583137-nintendo-switch-2-dock-usb-c-extension-adapter): the user supplied its nominal v14 STL for measurement. The original is not imported, copied, modified or redistributed here. This is independently constructed geometry using fit datums, not a literal merge.
+- [TPU-friendly Odin stand by Martin Mesa](https://www.printables.com/model/1417821-odin-2-portal-stand): visual/layout reference; original mesh not imported or included.
+
+Not an official Nintendo, AYN or dbrand product.

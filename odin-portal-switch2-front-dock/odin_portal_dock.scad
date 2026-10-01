@@ -1,177 +1,159 @@
-// Original companion cradle for the user's existing modified dock insert.
-// Units: mm. Official Odin dimensions are not a measured TPU/connector drawing.
-part = "layout"; // [stand,carrier,gauge,assembled,layout,placement,collision_check]
-$fn = 64;
-
-// Official AYN Odin 2 Portal dimensions (current specification image).
-odin_width = 257;
-odin_height = 98.6;
-odin_thickness = 17.2;
-// TPU allowance is an estimate, NOT an AYN-published grip measurement.
-tpu_per_face = 3;
-fit_allowance = 2;
-seat_gap = odin_thickness + 2*tpu_per_face + fit_allowance;
-tilt = 15; // rearward lean from vertical
-seat_height = 65;
-seat_y = 18;
-support_width = 160;
-seat_floor = 5;
-front_lip_height = 10;
-contact_wall = 4;
-rear_rail_height = 43;
-rail_width = 16;
-rail_offset = 58;
-
-base_width = 190;
-base_depth = 180;
-base_height = 8;
-base_corner = 4;
-cable_channel_width = 12;
-cable_channel_depth = 6;
-cable_channel_start = 65;
-foot_radius = 5;
-foot_recess = 1;
-
-// Oversized male housing cavity for adjustable neutral-cure silicone bedding.
-pocket_width = 22;
-pocket_depth = 14;
-pocket_height = 29;
-carrier_wall = 3;
-carrier_bottom = 3;
-wire_outlet = 9;
-loading_slit = 10;
-usb_access_width = 36;
-carrier_flange_width = 56;
-carrier_flange_depth = 20;
-carrier_flange_thickness = 3;
-mount_pitch = 46;
-mount_hole = 3.4;
-mount_travel = 10;
-head_clearance = 6.4;
-head_recess = 2;
-mid = seat_gap/2;
-carrier_outer_width = pocket_width + 2*carrier_wall;
-carrier_outer_depth = pocket_depth + 2*carrier_wall;
-carrier_height = pocket_height + carrier_bottom;
-eps = 0.02;
-
-assert(seat_gap > odin_thickness);
-assert(base_height > cable_channel_depth);
-assert(usb_access_width > carrier_outer_width);
-assert(carrier_flange_width > mount_pitch + mount_hole);
-assert(seat_floor > head_recess);
-assert(pocket_depth > wire_outlet);
-assert(base_width > support_width);
-
-module box(pos,size) { translate(pos) cube(size); }
-module posed() { translate([0,seat_y,seat_height]) rotate([-tilt,0,0]) children(); }
-module slot(length,diameter,height) {
-    hull() for(y=[-(length-diameter)/2,(length-diameter)/2])
-        translate([0,y,0]) cylinder(d=diameter,h=height);
+// ONE printed adapter: docking insert + over-front bridge + Odin cradle.
+// Original parametric construction from reference measurements; no mesh import.
+part="adapter"; // [adapter,assembled,placement,cable_check,dock_clearance_check,device_clearance_check]
+$fn=64;
+// Measured reference datums from user-supplied v14 STL (millimeters).
+reference_insert_width=200;
+reference_depth_envelope=14.3;
+insertion_height=50;
+flange_width=230;
+flange_height=10;
+insert_width_clearance=1.0;
+insert_depth_clearance=.5;
+insert_width=reference_insert_width-insert_width_clearance;
+insert_depth=reference_depth_envelope-insert_depth_clearance;
+entry_chamfer=1;
+foot_height=1;
+foot_x=95; // measured lower contact centers in supplied reference
+foot_y=3.18;
+foot_width=2;
+foot_depth=5;
+// Official AYN body dimensions; TPU allowance is an estimate.
+odin_width=257;
+odin_height=98.6;
+odin_thickness=17.2;
+tpu_per_face=3;
+fit_clearance=2;
+seat_gap=odin_thickness+2*tpu_per_face+fit_clearance;
+tilt=15;
+seat_y=-70; // NEGATIVE Y is in front of the Nintendo dock.
+seat_height=62; // relative to reference insert bottom, NOT desk height
+support_width=160;
+seat_floor=5;
+front_lip=10;
+contact_wall=4;
+rail_width=18;
+rail_offset=58;
+rear_contact_height=40;
+// Generous silicone-adjusted female and male housing pockets.
+female_center_y=-1.8; // reference central rounded bore center after upright rotation
+female_width=22;
+female_depth=14;
+female_height=30;
+male_width=22;
+male_depth=14;
+male_height=29;
+housing_wall=3;
+housing_floor=3;
+wire_diameter_allowance=8;
+wire_outlet=9;
+usb_access_width=36;
+bridge_front=-51;
+bridge_bottom=insertion_height+4;
+bridge_height=10;
+cable_bend_radius=20;
+front_bend_radius=12;
+channel_width=10;
+channel_floor=2;
+cable_z=bridge_bottom+channel_floor+wire_diameter_allowance/2;
+mid=seat_gap/2;
+holder_height=male_height+housing_floor;
+eps=.02;
+assert(insert_width<reference_insert_width);
+assert(insert_depth<reference_depth_envelope);
+assert(insert_depth>female_depth/2+abs(female_center_y));
+assert(seat_gap>odin_thickness);
+assert(usb_access_width>male_width+2*housing_wall);
+assert(bridge_bottom>insertion_height);
+assert(bridge_height>=wire_diameter_allowance+channel_floor);
+assert(female_height<cable_z-cable_bend_radius);
+module box(pos,size){translate(pos)cube(size);}
+module seated(){translate([0,seat_y,seat_height])rotate([-tilt,0,0])children();}
+module print_pose(){translate([0,0,insert_depth/2])rotate([-90,0,0])children();}
+module dock_insert_solid(){
+ union(){
+  hull(){
+   box([-insert_width/2+entry_chamfer,-insert_depth/2+entry_chamfer,0],[insert_width-2*entry_chamfer,insert_depth-2*entry_chamfer,eps]);
+   box([-insert_width/2,-insert_depth/2,entry_chamfer],[insert_width,insert_depth,eps]);
+  }
+  box([-insert_width/2,-insert_depth/2,entry_chamfer],[insert_width,insert_depth,insertion_height-entry_chamfer+eps]);
+  box([-flange_width/2,-insert_depth/2,insertion_height],[flange_width,insert_depth,flange_height]);
+  for(x=[-foot_x,foot_x])box([x-foot_width/2,foot_y-foot_depth/2,-foot_height],[foot_width,foot_depth,foot_height+eps]);
+ }
 }
-module yz_beam(x,points,width) {
-    translate([x,0,0])
-        multmatrix([[0,0,1,0],[1,0,0,0],[0,1,0,0],[0,0,0,1]])
-        linear_extrude(height=width) polygon(points);
+module cradle_solid(){
+ seated()union(){
+  difference(){
+   union(){
+    box([-support_width/2,-contact_wall,-seat_floor],[support_width,seat_gap+2*contact_wall,seat_floor]);
+    box([-support_width/2,-contact_wall,-seat_floor],[support_width,contact_wall,seat_floor+front_lip]);
+    for(x=[-rail_offset,rail_offset])box([x-rail_width/2,seat_gap,-seat_floor],[rail_width,5,rear_contact_height+seat_floor]);
+   }
+   box([-usb_access_width/2,-contact_wall-2,-seat_floor-1],[usb_access_width,seat_gap+2*contact_wall+4,rear_contact_height+seat_floor+5]);
+  }
+  // Fused tabs overlap shelf by 2 mm; integral pocket, NO mounting hardware.
+  box([-28,mid-10,-8],[56,20,5]);
+  box([-(male_width+2*housing_wall)/2,mid-(male_depth+2*housing_wall)/2,-holder_height],[male_width+2*housing_wall,male_depth+2*housing_wall,holder_height]);
+ }
 }
-module local_seat() {
-    difference() {
-        union() {
-            box([-support_width/2,-contact_wall,-seat_floor],
-                [support_width,seat_gap+2*contact_wall,seat_floor]);
-            box([-support_width/2,-contact_wall,-seat_floor],
-                [support_width,contact_wall,seat_floor+front_lip_height]);
-            for(x=[-rail_offset,rail_offset])
-                box([x-rail_width/2,seat_gap,-seat_floor],
-                    [rail_width,5,seat_floor+rear_rail_height]);
-        }
-        box([-usb_access_width/2,-contact_wall-2,-seat_floor-5],
-            [usb_access_width,seat_gap+2*contact_wall+4,rear_rail_height+20]);
-        for(x=[-mount_pitch/2,mount_pitch/2]) {
-            translate([x,mid,-seat_floor-5])
-                slot(mount_travel+mount_hole,mount_hole,seat_floor+10);
-            translate([x,mid,-head_recess])
-                slot(mount_travel+head_clearance,head_clearance,head_recess+eps);
-        }
-    }
+module bridge_solid(){
+ box([-support_width/2,bridge_front,bridge_bottom],[support_width,insert_depth/2-bridge_front,bridge_height]);
+ for(x=[-rail_offset,rail_offset])hull(){
+  seated()box([x-rail_width/2,seat_gap,-seat_floor],[rail_width,5,14]);
+  box([x-rail_width/2,bridge_front+3,bridge_bottom],[rail_width,13,bridge_height]);
+ }
 }
-module platform() {
-    difference() {
-        translate([0,base_depth/2,0]) linear_extrude(height=base_height)
-            offset(r=base_corner) square([base_width-2*base_corner,base_depth-2*base_corner],center=true);
-        box([-cable_channel_width/2,cable_channel_start,base_height-cable_channel_depth],
-            [cable_channel_width,base_depth-cable_channel_start+eps,cable_channel_depth+eps]);
-        for(x=[-base_width/2+15,base_width/2-15],y=[12,base_depth-15])
-            translate([x,y,-eps]) cylinder(r=foot_radius,h=foot_recess+eps);
-    }
+module cable_cut(){
+ // Female housing loads from bottom/front; align socket with dock plug before curing.
+ box([-female_width/2,female_center_y-female_depth/2,-eps],[female_width,female_depth,female_height+eps]);
+ // Front-open vertical trough permits laying in cable without threading plugs.
+ box([-channel_width/2,-insert_depth/2-1,female_height-1],[channel_width,insert_depth/2+1+female_center_y+wire_diameter_allowance/2,cable_z-female_height+4]);
+ // Smooth 20 mm-radius emergence above the dock lip.
+ for(theta=[0:5:85])hull()for(t=[theta,theta+5])translate([0,female_center_y-cable_bend_radius+cable_bend_radius*cos(t),cable_z-cable_bend_radius+cable_bend_radius*sin(t)])sphere(d=wire_diameter_allowance,$fn=32);
+ // Exit notch through bridge floor for the downward slack loop.
+ box([-channel_width/2,bridge_front-2,bridge_bottom-10],[channel_width,front_bend_radius+10,bridge_height+11]);
+ // Top-open horizontal trough to front cradle.
+ box([-channel_width/2,bridge_front-2,bridge_bottom+channel_floor],[channel_width,insert_depth/2-bridge_front+3,bridge_height+5]);
+ seated(){
+  box([-male_width/2,mid-male_depth/2,-male_height],[male_width,male_depth,male_height+eps]);
+  translate([0,mid,-holder_height-eps])cylinder(d=wire_outlet,h=housing_floor+2*eps);
+  box([-5,mid+male_depth/2-1,-holder_height-eps],[10,housing_wall+2,holder_height+2*eps]);
+ }
 }
-module stand() {
-    yf=seat_y+cos(tilt)*(-contact_wall)+sin(tilt)*(-seat_floor);
-    zf=seat_height-sin(tilt)*(-contact_wall)+cos(tilt)*(-seat_floor);
-    yb=seat_y+cos(tilt)*(seat_gap+5)+sin(tilt)*(-seat_floor);
-    zb=seat_height-sin(tilt)*(seat_gap+5)+cos(tilt)*(-seat_floor);
-    union() {
-        platform();
-        posed() local_seat();
-        for(x=[-rail_offset-rail_width/2,rail_offset-rail_width/2])
-            difference() {
-                yz_beam(x,[[5,5],[80,5],[yb+1,zb+1],[yf-1,zf+1]],rail_width);
-                yz_beam(x-1,[[20,15],[63,15],[33,43]],rail_width+2);
-            }
-    }
+module device_clearance(){seated()box([-odin_width/2,0,0],[odin_width,seat_gap,odin_height+6]);}
+// Exclude the intentional seating-contact plane by 0.02 mm in collision check.
+module device_envelope(){seated()box([-odin_width/2,1,eps],[odin_width,seat_gap-2,odin_height+6-eps]);}
+module adapter_assembled(){difference(){union(){dock_insert_solid();bridge_solid();cradle_solid();}cable_cut();device_clearance();}}
+module cable_reference(){
+ translate([0,female_center_y,27])cylinder(d=6,h=cable_z-cable_bend_radius-27);
+ for(theta=[0:5:85])hull()for(t=[theta,theta+5])translate([0,female_center_y-cable_bend_radius+cable_bend_radius*cos(t),cable_z-cable_bend_radius+cable_bend_radius*sin(t)])sphere(d=6,$fn=20);
+ hull()for(y=[female_center_y-cable_bend_radius,bridge_front+4+front_bend_radius])translate([0,y,cable_z])sphere(d=6,$fn=20);
+ for(theta=[0:5:85])hull()for(t=[theta,theta+5])translate([0,bridge_front+4+front_bend_radius-front_bend_radius*sin(t),cable_z-front_bend_radius+front_bend_radius*cos(t)])sphere(d=6,$fn=20);
+ // Accessible slack loop below cradle, with a smooth return into male outlet.
+ outlet=[0,seat_y+mid*cos(tilt)-holder_height*sin(tilt),seat_height-mid*sin(tilt)-holder_height*cos(tilt)];
+ direction=[0,sin(tilt),cos(tilt)];
+ approach=outlet-8*direction;
+ column_y=bridge_front+4;
+ center_y=(column_y+approach[1])/2;
+ radius=(column_y-approach[1])/2;
+ hull()for(z=[cable_z-front_bend_radius,approach[2]])translate([0,column_y,z])sphere(d=6,$fn=20);
+ for(theta=[0:10:170])hull()for(t=[theta,theta+10])translate([0,center_y+radius*cos(t),approach[2]-radius*sin(t)])sphere(d=6,$fn=20);
+ hull()for(p=[approach,outlet+4*direction])translate(p)sphere(d=6,$fn=20);
 }
-module carrier_local() {
-    difference() {
-        union() {
-            box([-carrier_outer_width/2,mid-carrier_outer_depth/2,-carrier_height],
-                [carrier_outer_width,carrier_outer_depth,carrier_height]);
-            box([-carrier_flange_width/2,mid-carrier_flange_depth/2,-seat_floor-carrier_flange_thickness],
-                [carrier_flange_width,carrier_flange_depth,carrier_flange_thickness]);
-        }
-        box([-pocket_width/2,mid-pocket_depth/2,-pocket_height],
-            [pocket_width,pocket_depth,pocket_height+eps]);
-        translate([0,mid,-carrier_height-eps]) cylinder(d=wire_outlet,h=carrier_bottom+2*eps);
-        box([-loading_slit/2,mid+pocket_depth/2-1,-carrier_height-eps],
-            [loading_slit,carrier_wall+2,carrier_height+2*eps]);
-        for(x=[-mount_pitch/2,mount_pitch/2])
-            translate([x,mid,-seat_floor-carrier_flange_thickness-eps])
-                cylinder(d=mount_hole,h=carrier_flange_thickness+2*eps);
-    }
+module illustrative_dock(){
+ // Wall envelopes for clearance checks, NOT a measured whole Nintendo dock.
+ box([-100,-25,-55],[200,17,insertion_height+55]);
+ box([-100,8,-55],[200,18,insertion_height+55]);
 }
-module carrier_print() {
-    translate([0,carrier_outer_depth/2-mid,carrier_height]) carrier_local();
+if(part=="adapter")print_pose()adapter_assembled();
+else if(part=="assembled")adapter_assembled();
+else if(part=="placement"){
+ color([.3,.48,.6])adapter_assembled();
+ %illustrative_dock();
+ %device_envelope();
+ %color([1,.5,.1])cable_reference();
 }
-module gauge() {
-    difference() {
-        union() {
-            box([-40,-contact_wall,0],[80,seat_gap+2*contact_wall,3]);
-            box([-40,-contact_wall,0],[80,contact_wall,10]);
-            box([-40,seat_gap,0],[80,contact_wall,10]);
-        }
-        box([-pocket_width/2,mid-pocket_depth/2,-eps],[pocket_width,pocket_depth,11]);
-        box([-loading_slit/2,mid+pocket_depth/2-1,-eps],[loading_slit,seat_gap+10,11]);
-    }
-}
-module assembled() {
-    color([.22,.32,.42]) stand();
-    color([1,.42,.12]) posed() carrier_local();
-}
-module layout() {
-    color([.22,.32,.42]) stand();
-    translate([base_width/2+40,0,0]) color([1,.42,.12]) carrier_print();
-    translate([base_width/2+60,60,0]) color([.3,.6,.7]) gauge();
-}
-module placement() {
-    assembled();
-    // Background boxes are ILLUSTRATIVE; dock dimensions are NOT verified.
-    %posed() box([-odin_width/2,1,0],[odin_width,seat_gap-2,odin_height+6]);
-    %box([-100,100,base_height],[200,65,110]);
-}
-if(part=="stand") stand();
-else if(part=="carrier") carrier_print();
-else if(part=="gauge") gauge();
-else if(part=="assembled") assembled();
-else if(part=="layout") layout();
-else if(part=="placement") placement();
-else if(part=="collision_check") intersection() { stand(); posed() carrier_local(); }
+else if(part=="cable_check")intersection(){adapter_assembled();cable_reference();}
+else if(part=="dock_clearance_check")intersection(){adapter_assembled();illustrative_dock();}
+else if(part=="device_clearance_check")intersection(){adapter_assembled();device_envelope();}
 else assert(false,"Unknown part selector");

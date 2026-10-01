@@ -1,34 +1,149 @@
 {
-  "front-cradle": {
-    "watertight": true,
-    "connected_solids": 1,
-    "dimensions_mm": [
-      190.0,
-      180.0,
-      100.013
+  "source_sha256": "f6a22a3586f67fadb9258ef2cb05fb6748c51503c93c0c81a558f579e8b21264",
+  "adapter_stl_sha256": "abe230f1df0f12f7c528a884f4838d50918916e67e3e5ea836f3b158b9febb70",
+  "printed_parts": 1,
+  "connected_solids": 1,
+  "watertight": true,
+  "positive_volume": true,
+  "print_dimensions_mm": [
+    230.0,
+    95.1148,
+    82.67079961853
+  ],
+  "assembled_bounds_mm": [
+    [
+      -115.0,
+      -75.7708,
+      -1.0000000000000004
     ],
-    "volume_mm3": 360488.5264982323
-  },
-  "usb-carrier": {
-    "watertight": true,
-    "connected_solids": 1,
-    "dimensions_mm": [
-      56.0,
-      20.000000572205,
-      32.0
+    [
+      115.0,
+      6.899999618530004,
+      94.1148
+    ]
+  ],
+  "volume_mm3": 264518.255287384,
+  "triangles": 1266,
+  "insertion_envelope_mm": [
+    199.0,
+    13.8,
+    50.0
+  ],
+  "insertion_sections": [
+    {
+      "height_mm": 5,
+      "bounds_mm": [
+        [
+          -99.5,
+          -6.9,
+          5.0
+        ],
+        [
+          99.5,
+          6.899999618530001,
+          5.0
+        ]
+      ]
+    },
+    {
+      "height_mm": 15,
+      "bounds_mm": [
+        [
+          -99.5,
+          -6.8999999999999995,
+          15.0
+        ],
+        [
+          99.5,
+          6.899999618530002,
+          15.0
+        ]
+      ]
+    },
+    {
+      "height_mm": 35,
+      "bounds_mm": [
+        [
+          -99.5,
+          -6.899999999999999,
+          35.0
+        ],
+        [
+          99.5,
+          6.8999996185300025,
+          35.0
+        ]
+      ]
+    },
+    {
+      "height_mm": 49,
+      "bounds_mm": [
+        [
+          -99.5,
+          -6.899999999999998,
+          49.0
+        ],
+        [
+          99.5,
+          6.899999618530003,
+          49.0
+        ]
+      ]
+    }
+  ],
+  "cradle_depth_clearance_mm": 25.2,
+  "cable_test_diameter_mm": 6,
+  "cable_route_positive_volume_collision": false,
+  "illustrative_dock_walls_positive_volume_collision": false,
+  "odin_tpu_envelope_positive_volume_collision": false,
+  "device_check_seat_contact_exclusion_mm": 0.02,
+  "physical_fit_verified": false,
+  "assumptions": [
+    "TPU allowance 3 mm per face, not measured.",
+    "Cable housing pockets intentionally oversized for silicone adjustment.",
+    "Dock wall envelopes illustrative, not a full measured Nintendo dock.",
+    "Reference STL is nominal original; user previously removed material in their printed copy."
+  ],
+  "openscad_results": {
+    "adapter": [
+      {
+        "exit_code": 0,
+        "expected_empty_intersection": false,
+        "log": "Geometries in cache: 95\nGeometry cache size in bytes: 2926456\nCGAL Polyhedrons in cache: 37\nCGAL cache size in bytes: 41674112\nTotal rendering time: 0:00:17.024\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      629\n   Halfedges:    2026\n   Edges:        1013\n   Halffacets:    760\n   Facets:        380\n   Volumes:         2\n"
+      },
+      {
+        "exit_code": 0,
+        "expected_empty_intersection": false,
+        "log": "Geometries in cache: 95\nGeometry cache size in bytes: 2926456\nCGAL Polyhedrons in cache: 37\nCGAL cache size in bytes: 41674112\nTotal rendering time: 0:00:17.070\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      629\n   Halfedges:    2026\n   Edges:        1013\n   Halffacets:    760\n   Facets:        380\n   Volumes:         2\n"
+      }
     ],
-    "volume_mm3": 9433.067276051639
-  },
-  "fit-gauge": {
-    "watertight": true,
-    "connected_solids": 1,
-    "dimensions_mm": [
-      80.0,
-      33.2,
-      10.0
+    "assembled": [
+      {
+        "exit_code": 0,
+        "expected_empty_intersection": false,
+        "log": "Geometries in cache: 95\nGeometry cache size in bytes: 2926456\nCGAL Polyhedrons in cache: 35\nCGAL cache size in bytes: 39743104\nTotal rendering time: 0:00:16.907\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:      629\n   Halfedges:    2026\n   Edges:        1013\n   Halffacets:    760\n   Facets:        380\n   Volumes:         2\n"
+      }
     ],
-    "volume_mm3": 10956.0
-  },
-  "carrier_stand_collision_mm3": 0.003945148481105364,
-  "physical_fit_verified": false
+    "cable_check": [
+      {
+        "exit_code": 1,
+        "expected_empty_intersection": true,
+        "log": "Geometries in cache: 213\nGeometry cache size in bytes: 6413256\nCGAL Polyhedrons in cache: 97\nCGAL cache size in bytes: 92950800\nTotal rendering time: 0:00:37.992\nCurrent top level object is empty.\n"
+      }
+    ],
+    "dock_clearance_check": [
+      {
+        "exit_code": 1,
+        "expected_empty_intersection": true,
+        "log": "Geometries in cache: 99\nGeometry cache size in bytes: 2929368\nCGAL Polyhedrons in cache: 37\nCGAL cache size in bytes: 39767232\nTotal rendering time: 0:00:16.677\nCurrent top level object is empty.\n"
+      }
+    ],
+    "device_clearance_check": [
+      {
+        "exit_code": 1,
+        "expected_empty_intersection": true,
+        "log": "Geometries in cache: 99\nGeometry cache size in bytes: 2929368\nCGAL Polyhedrons in cache: 36\nCGAL cache size in bytes: 39743104\nTotal rendering time: 0:00:16.708\nCurrent top level object is empty.\n"
+      }
+    ]
+  }
 }
