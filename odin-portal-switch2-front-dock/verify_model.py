@@ -1,6 +1,6 @@
-"""Regenerate and verify the ONE-PIECE adapter from OpenSCAD.
-Run with: uv run --python 3.11 --with trimesh --with scipy --with networkx --with matplotlib --no-project python verify_model.py
-PNG rendering requires a working DISPLAY/OpenGL context. Set OPENSCAD_BIN if needed.
+"""Regenerate one-piece SIDE-ROUTED adapter and verify geometry.
+uv run --python 3.11 --with trimesh --with scipy --with networkx --with matplotlib --no-project python verify_model.py
+OpenSCAD PNG rendering needs a graphics display; OPENSCAD_BIN may override executable.
 """
 import concurrent.futures, hashlib, json, math, os, re, shutil, subprocess, tempfile
 from pathlib import Path
@@ -10,110 +10,141 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection
+from matplotlib.patches import Rectangle, Polygon
 
 ROOT=Path(__file__).resolve().parent
 SCAD=ROOT/'odin_portal_dock.scad'
 EXE=os.environ.get('OPENSCAD_BIN') or shutil.which('openscad') or '/opt/data/tools/openscad/runtime/usr/bin/openscad'
-TMP=Path(tempfile.mkdtemp(prefix='odin-onepiece-check-'))
+TMP=Path(tempfile.mkdtemp(prefix='odin-side-check-'))
 source=SCAD.read_text()
 def value(name):
-    match=re.search(r'^'+re.escape(name)+r'=([0-9.\-]+);',source,re.M)
-    assert match,name
-    return float(match.group(1))
-angle=value('tilt'); gap=value('odin_thickness')+2*value('tpu_per_face')+value('fit_clearance')
+    m=re.search(r'^'+re.escape(name)+r'=([0-9.\-]+);',source,re.M)
+    assert m,name
+    return float(m.group(1))
+angle=value('tilt'); a=math.radians(angle)
+gap=value('odin_thickness')+2*value('tpu_per_face')+value('fit_clearance')
 depth=value('reference_depth_envelope')-value('insert_depth_clearance')
 width=value('reference_insert_width')-value('insert_width_clearance')
+tabletop=value('insertion_height')-value('seating_stop_to_table')
+seat_z=tabletop+value('seat_above_table'); sy=value('seat_y')
 results={}
 
 def render(job):
     part,out,png=job
     cmd=[EXE,'--render','-D',f'part="{part}"','-o',str(out)]
     if png:
-        cmd.extend(['--autocenter','--viewall','--projection=ortho','--imgsize=1400,1000','--colorscheme=Tomorrow','--camera=0,-30,50,65,0,35,350'])
+        cmd.extend(['--autocenter','--viewall','--projection=ortho','--imgsize=1400,1000','--colorscheme=Metallic','--camera=0,-30,20,65,0,35,350'])
     cmd.append(str(SCAD))
     p=subprocess.run(cmd,capture_output=True,text=True)
     empty='Current top level object is empty.' in p.stderr
     check=part.endswith('_check')
-    assert (p.returncode==1 and empty) if check else p.returncode==0, (part,p.returncode,p.stderr)
-    print(part,'PASS',('empty intersection' if check else str(out.name)),flush=True)
+    assert (p.returncode==1 and empty) if check else p.returncode==0,(part,p.returncode,p.stderr)
+    print(part,'PASS',('empty intersection' if check else out.name),flush=True)
     return part,{'exit_code':p.returncode,'expected_empty_intersection':empty,'log':p.stderr}
 
 jobs=[('adapter',ROOT/'adapter.stl',False),('assembled',ROOT/'preview.png',True),
-      ('adapter',ROOT/'print-orientation.png',True),('cable_check',TMP/'cable.stl',False),
-      ('dock_clearance_check',TMP/'dock.stl',False),('device_clearance_check',TMP/'device.stl',False)]
+      ('adapter',ROOT/'print-orientation.png',True)]
+for name in ['cable_check','dock_clearance_check','device_clearance_check','table_check','cable_device_check','cable_dock_check']:
+    jobs.append((name,TMP/(name+'.stl'),False))
 with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
-    for part,result in ex.map(render,jobs):
-        results.setdefault(part,[]).append(result)
+    for part,result in ex.map(render,jobs): results.setdefault(part,[]).append(result)
 
 mesh=trimesh.load_mesh(ROOT/'adapter.stl',process=True)
 assert mesh.is_watertight and mesh.is_volume
-assert len(mesh.split())==1,'Adapter must be exactly ONE connected printed solid'
-assert mesh.bounds[0,2]>=-1e-4,'Print pose must not fall below bed'
-# Undo print pose for dimension and route diagrams.
+assert len(mesh.split())==1,'Must be ONE connected printed solid'
+assert mesh.bounds[0,2]>=-1e-4,'Print below bed'
 assembled=mesh.copy(); assembled.apply_translation([0,0,-depth/2])
 assembled.apply_transform(trimesh.transformations.rotation_matrix(math.pi/2,[1,0,0]))
-# Verify actual insertion envelope at multiple heights, not just total bounds.
+assert abs(assembled.bounds[0,2]-tabletop)<1e-3
+assert value('front_base_rear') < -value('dock_depth')/2
+assert value('side_arm_inner_x') > value('dock_width')/2
 sections=[]
 for h in (5,15,35,49):
-    cut=assembled.section(plane_origin=[0,0,h],plane_normal=[0,0,1])
-    assert cut is not None
-    # Other front cradle material can share a height; filter to the docking slot.
-    vertices=cut.vertices[np.abs(cut.vertices[:,1])<=depth/2+1e-3]
-    assert len(vertices)>0
-    bounds=np.array([vertices.min(axis=0),vertices.max(axis=0)])
+    cut=assembled.section(plane_origin=[0,0,h],plane_normal=[0,0,1]); assert cut is not None
+    # Exclude separately located external side link, not the docking blade.
+    v=cut.vertices[(np.abs(cut.vertices[:,1])<=depth/2+1e-3)&(np.abs(cut.vertices[:,0])<=value('reference_insert_width')/2+1e-3)]
+    assert len(v)
+    bounds=np.array([v.min(axis=0),v.max(axis=0)])
     assert bounds[0,0]>=-width/2-1e-3 and bounds[1,0]<=width/2+1e-3
     assert bounds[0,1]>=-depth/2-1e-3 and bounds[1,1]<=depth/2+1e-3
     sections.append({'height_mm':h,'bounds_mm':bounds.tolist()})
 
-# Side diagram: real adapter projection, clearly illustrative dock/handheld.
-fig,ax=plt.subplots(figsize=(12,9))
-ax.add_collection(PolyCollection(assembled.triangles[:,:,[1,2]],facecolor='#416b84',edgecolor='#34566a',linewidth=.12))
-from matplotlib.patches import Rectangle,Polygon
-for y,w in [(-25,17),(8,18)]:
-    ax.add_patch(Rectangle((y,-55),w,105,facecolor='#bbbbbb',alpha=.4,edgecolor='#555555'))
-a=math.radians(angle); sy=value('seat_y'); sz=value('seat_height')
-# Transform device envelope corners in Y/Z; no decorative product reconstruction.
-def yz(y,z): return (sy+y*math.cos(a)+z*math.sin(a),sz-y*math.sin(a)+z*math.cos(a))
-height=value('odin_height')+6
+# Exact parameterized centerline, for side/top routing diagrams.
+def yz(y,z): return np.array([sy+y*math.cos(a)+z*math.sin(a),seat_z-y*math.sin(a)+z*math.cos(a)])
+height=value('odin_height')+6; mid=gap/2
+holder_height=value('male_height')+value('housing_floor')
+outlet=np.array([0,*yz(mid,-holder_height)])
+direction=np.array([0,math.sin(a),math.cos(a)])
+r=value('cable_bend_radius'); cy=value('female_center_y'); cx=value('side_column_x'); hz=value('side_exit_height')
+return_y=outlet[1]-r*math.sin(a); return_z=outlet[2]-r*math.cos(a)
+u=np.linspace(0,math.pi/2,40)
+points=[np.array([0,cy,20]),np.array([0,cy,hz-r])]
+points.extend(np.column_stack((r-r*np.cos(u),np.full_like(u,cy),hz-r+r*np.sin(u))))
+points.append(np.array([cx-r,cy,hz]))
+points.extend(np.column_stack((cx-r+r*np.sin(u),np.full_like(u,cy),hz-r+r*np.cos(u))))
+points.append(np.array([cx,cy,return_z+r]))
+points.extend(np.column_stack((np.full_like(u,cx),cy-r+r*np.cos(u),return_z+r-r*np.sin(u))))
+points.append(np.array([cx,return_y+r,return_z]))
+points.extend(np.column_stack((cx-r+r*np.cos(u),return_y+r-r*np.sin(u),np.full_like(u,return_z))))
+points.append(np.array([r,return_y,return_z]))
+points.extend(outlet+r*(1-math.sin(t))*np.array([1,0,0])-r*math.cos(t)*direction for t in u)
+points.append(outlet+4*direction); route=np.array(points)
+centroid_yz=yz(gap/2,height/2)
+margin=min(centroid_yz[0]-value('front_base_front'),value('front_base_rear')-centroid_yz[0],value('front_base_width')/2)
+assert margin>0
+assert route[:,2].min()-3>tabletop
+
+fig,axs=plt.subplots(1,2,figsize=(17,10))
+# Side projection: right arm/cable are outside page plane, stated explicitly.
+ax=axs[0]
+ax.add_collection(PolyCollection(assembled.triangles[:,:,[1,2]],facecolor='#4b7891',edgecolor='#35566b',linewidth=.1))
+hd=value('dock_depth')/2
+for y,w in [(-hd,hd-8),(8,hd-8)]: ax.add_patch(Rectangle((y,tabletop),w,value('dock_height'),facecolor='#aaaaaa',alpha=.25,edgecolor='#555555'))
 corners=[yz(1,0),yz(gap-1,0),yz(gap-1,height),yz(1,height)]
-ax.add_patch(Polygon(corners,facecolor='#6cb5bd',alpha=.24,edgecolor='#247985'))
-# Lay-in cable and loose, accessible return loop below cradle.
-r=value('cable_bend_radius'); cy=value('female_center_y')
-z=value('insertion_height')+4+value('channel_floor')+value('wire_diameter_allowance')/2
-arc=np.linspace(0,math.pi/2,50)
-column=value('bridge_front')+4; front_r=value('front_bend_radius')
-route_y=[cy,cy]+list(cy-r+r*np.cos(arc))+[column+front_r]+list(column+front_r-front_r*np.sin(arc))
-route_z=[20,z-r]+list(z-r+r*np.sin(arc))+[z]+list(z-front_r+front_r*np.cos(arc))
-holder_height=value('male_height')+value('housing_floor'); mid=gap/2
-outlet=np.array(yz(mid,-holder_height)); direction=np.array([math.sin(a),math.cos(a)])
-approach=outlet-8*direction; column=value('bridge_front')+4
-loop_r=(column-approach[0])/2; loop_c=(column+approach[0])/2
-u=np.linspace(0,math.pi,50)
-route_y.extend([column]+list(loop_c+loop_r*np.cos(u))+[outlet[0]])
-route_z.extend([approach[1]]+list(approach[1]-loop_r*np.sin(u))+[outlet[1]])
-ax.plot(route_y,route_z,color='#ee8526',linewidth=3,label='Cable route and accessible slack loop')
-ax.annotate('ONE PRINTED PIECE\nOdin cradle + integral USB-C male pocket',xy=(-64,63),xytext=(-125,117),arrowprops={'arrowstyle':'->'},fontsize=11)
-ax.annotate('Insert slides into dock slot\n199 × 13.8 mm, 50 mm to stop',xy=(0,22),xytext=(22,87),arrowprops={'arrowstyle':'->'},fontsize=10)
-ax.annotate('Existing Nintendo dock\n(gray walls are illustrative)',xy=(16,-25),xytext=(21,-40),arrowprops={'arrowstyle':'->'},fontsize=10)
-ax.annotate('Integral USB-C female pocket\nSilicone-adjusted alignment',xy=(-1.8,8),xytext=(-126,-35),arrowprops={'arrowstyle':'->'},fontsize=10)
-ax.set_xlim(-135,105);ax.set_ylim(-65,177);ax.set_aspect('equal');ax.grid(alpha=.15)
+ax.add_patch(Polygon(corners,facecolor='#6ebec6',alpha=.22,edgecolor='#267c87'))
+ax.plot(route[:,1],route[:,2],color='#e78325',linewidth=2.4)
+ax.plot([centroid_yz[0]]*2,[centroid_yz[1],tabletop],linestyle='--',color='#222222',linewidth=1)
+ax.axhline(tabletop,color='#222222',linewidth=2)
+ax.annotate('LOWER FRONT CRADLE\n55 mm seat datum above table',xy=(-66,-8),xytext=(-124,97),arrowprops={'arrowstyle':'->'},fontsize=10)
+ax.annotate('Right-side link is OUTSIDE dock\n(no overhead front bridge)',xy=(-2,15),xytext=(28,70),arrowprops={'arrowstyle':'->'},fontsize=9)
+ax.annotate('Front sole and Nintendo dock\nrest on SAME tabletop',xy=(-72,tabletop),xytext=(-124,tabletop+20),arrowprops={'arrowstyle':'->'},fontsize=9)
+ax.set_xlim(-130,122);ax.set_ylim(tabletop-12,116);ax.set_aspect('equal');ax.grid(alpha=.15)
+ax.set_title('Side projection — side cable is outside wall in X',fontsize=11)
 ax.set_xlabel('Front ← Y → rear / mm');ax.set_ylabel('Z / mm relative to insert bottom')
-ax.set_title('One-piece Switch 2 → Odin 2 Portal adapter\nCyan: official body dimensions + estimated TPU allowance',fontsize=14)
-ax.legend(loc='lower right',fontsize=8);fig.tight_layout();fig.savefig(ROOT/'placement.png',dpi=150);plt.close(fig)
+# Top projection distinguishes side route from an impossible through-wall path.
+ax=axs[1]
+ax.add_patch(Rectangle((-value('dock_width')/2,-hd),value('dock_width'),value('dock_depth'),facecolor='#aaaaaa',alpha=.23,edgecolor='#666666'))
+ax.add_collection(PolyCollection(assembled.triangles[:,:,[0,1]],facecolor='#4b7891',edgecolor='#35566b',linewidth=.09))
+body_y=np.array(corners)[:,0]; ax.add_patch(Rectangle((-value('odin_width')/2,body_y.min()),value('odin_width'),body_y.max()-body_y.min(),facecolor='#6ebec6',alpha=.12,edgecolor='#267c87'))
+ax.plot(route[:,0],route[:,1],color='#e78325',linewidth=2.5)
+ax.scatter([0],[centroid_yz[0]],color='#222222',s=25)
+ax.annotate('INSERT',xy=(-30,0),xytext=(-117,23),arrowprops={'arrowstyle':'->'},fontsize=10)
+ax.annotate('RIGHT-SIDE EXIT',xy=(108,-1.8),xytext=(36,25),arrowprops={'arrowstyle':'->'},fontsize=10)
+ax.annotate('Side arm + ground link\nconnects into front base',xy=(109,-31),xytext=(9,-113),arrowprops={'arrowstyle':'->'},fontsize=9)
+ax.set_xlim(-145,145);ax.set_ylim(-126,40);ax.set_aspect('equal');ax.grid(alpha=.15)
+ax.set_title('Top projection — cable goes AROUND the right wall',fontsize=11)
+ax.set_xlabel('X / mm');ax.set_ylabel('Front ← Y → rear / mm')
+fig.suptitle('ONE-PIECE SIDE-ROUTED ADAPTER | tabletop-supported Odin cradle\nCyan/gray are illustrative device/dock envelopes; black dashed line is envelope-centroid projection, not measured COM',fontsize=13)
+fig.tight_layout();fig.savefig(ROOT/'placement.png',dpi=155);plt.close(fig)
 
 report={'source_sha256':hashlib.sha256(SCAD.read_bytes()).hexdigest(),
-        'adapter_stl_sha256':hashlib.sha256((ROOT/'adapter.stl').read_bytes()).hexdigest(),
-        'printed_parts':1,'connected_solids':1,'watertight':True,'positive_volume':True,
-        'print_dimensions_mm':mesh.extents.tolist(),'assembled_bounds_mm':assembled.bounds.tolist(),
-        'volume_mm3':float(mesh.volume),'triangles':len(mesh.faces),
-        'insertion_envelope_mm':[width,depth,value('insertion_height')],
-        'insertion_sections':sections,'cradle_depth_clearance_mm':gap,
-        'cable_test_diameter_mm':6,'cable_route_positive_volume_collision':False,
-        'illustrative_dock_walls_positive_volume_collision':False,
-        'odin_tpu_envelope_positive_volume_collision':False,
-        'device_check_seat_contact_exclusion_mm':value('eps'),
-        'physical_fit_verified':False,
-        'assumptions':['TPU allowance 3 mm per face, not measured.','Cable housing pockets intentionally oversized for silicone adjustment.','Dock wall envelopes illustrative, not a full measured Nintendo dock.','Reference STL is nominal original; user previously removed material in their printed copy.'],
-        'openscad_results':results}
+ 'adapter_stl_sha256':hashlib.sha256((ROOT/'adapter.stl').read_bytes()).hexdigest(),
+ 'printed_parts':1,'connected_solids':1,'watertight':True,'positive_volume':True,
+ 'print_dimensions_mm':mesh.extents.tolist(),'assembled_bounds_mm':assembled.bounds.tolist(),
+ 'volume_mm3':float(mesh.volume),'triangles':len(mesh.faces),'insertion_envelope_mm':[width,depth,value('insertion_height')],
+ 'insertion_sections':sections,'cradle_depth_clearance_mm':gap,
+ 'cable_test_diameter_mm':6,'side_exit_height_relative_to_insert_mm':hz,
+ 'right_side_route':True,'over_front_bridge_present':False,'seat_above_table_mm':value('seat_above_table'),
+ 'tabletop_plane_z_mm':tabletop,'model_min_z_mm':float(assembled.bounds[0,2]),
+ 'front_base_level_with_modeled_dock':True,'front_base_beneath_dock':False,
+ 'side_arm_clearance_to_official_width_mm':value('side_arm_inner_x')-value('dock_width')/2,
+ 'handheld_envelope_centroid_yz_mm':centroid_yz.tolist(),'projection_margin_mm':float(margin),
+ 'cable_min_center_height_above_table_mm':float(route[:,2].min()-tabletop),
+ 'cable_route_positive_volume_collision':False,'cable_intersects_device':False,'cable_intersects_dock':False,
+ 'odin_tpu_envelope_positive_volume_collision':False,'illustrative_dock_walls_positive_volume_collision':False,
+ 'model_or_cable_below_table':False,'device_check_seat_contact_exclusion_mm':value('eps'),
+ 'physical_fit_verified':False,'actual_loaded_balance_verified':False,
+ 'assumptions':['3 mm TPU allowance per face, not measured.','Oversized cable pockets for silicone adjustment, not measured housings.','Simplified dock walls use official external dimensions; actual slot placement/vents not fully measured.','115 mm seating-stop height is an official overall-height proxy; verify your real stop-to-table datum.','Envelope centroid is not measured real-device COM.'],
+ 'openscad_results':results}
 (ROOT/'validation.json').write_text(json.dumps(report,indent=2))
 print(json.dumps({k:v for k,v in report.items() if k!='openscad_results'},indent=2))
